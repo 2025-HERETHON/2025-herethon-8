@@ -8,7 +8,7 @@ from django.views import View
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
-# 게시글 리스트
+# 게시글 리스트 조회
 @login_required
 def community_list_view(request):
     posts = Post.objects.all().order_by('-created_at')
@@ -32,8 +32,10 @@ def post_create_view(request):
     return render(request, 'post_form.html', {'form': form})
 
 
+# 게시글 상세
 @method_decorator(login_required, name='dispatch')
 class PostDetailView(View):
+    # 게시글 상세 조회
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         post.views += 1
@@ -63,6 +65,7 @@ class PostDetailView(View):
         return render(request, 'post_form.html', {'form': form, 'post': post})
 
 
+# 게시글 삭제
 @method_decorator(login_required, name='dispatch')
 class PostDeleteView(View):
     def post(self, request, pk):
@@ -72,8 +75,10 @@ class PostDeleteView(View):
         return redirect('community_list')
 
 
+# 댓글
 @method_decorator(login_required, name='dispatch')
 class CommentView(View):
+    # 댓글 조회
     def get(self, request, post_pk):
         post = get_object_or_404(Post, pk=post_pk)
         comments = Comment.objects.filter(
@@ -98,6 +103,7 @@ class CommentView(View):
             'edit_comment_id': edit_comment_id,
         })
 
+    # 댓글 작성, 수정
     def post(self, request, post_pk):
         post = get_object_or_404(Post, pk=post_pk)
         edit_comment_id = request.GET.get('edit')
