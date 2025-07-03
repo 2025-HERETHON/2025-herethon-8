@@ -8,4 +8,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', hometest),  # 루트 경로 처리
     path('accounts/',include('accounts.urls')),
+    path('community/',include('community.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

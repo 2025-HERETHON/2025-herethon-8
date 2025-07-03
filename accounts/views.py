@@ -5,6 +5,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 #from blog.models import Post
 
+
+
 def signup(request):
     if request.method=="GET":
         form=SignUpForm()
