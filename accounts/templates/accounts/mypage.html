@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{% url 'accounts:hometest' %}">홈으로</a>
+
+    <h2>마이페이지</h2>
+    
+    <a href="{% url 'accounts:myblog' %}">작성한 글</a><br>
+    <a href="{% url 'accounts:myreport' %}">내 제보</a><br>
+
+    {% if request.user.profile_image %}
+        <img width="200px" src="{{ request.user.profile_image.url }}" alt="Profile Image">
+    {% else %}
+        <img width="200px" src="{% static 'img/profile.png' %}" alt="Default Profile">
+    {% endif %}
+
+    <form method="POST" action="{% url 'accounts:mypage' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type="file" name="profile_image"><br>
+        <button type="submit">이미지 변경</button>
+    </form>
+
+    <p>username: {{request.user.username}}</p>
+    <p>email: {{request.user.email}}</p>
+    <p>nickname: {{request.user.nickname}}</p>
+
+</body>
+</html>
