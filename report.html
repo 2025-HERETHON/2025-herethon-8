@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="report.css">
+    <title>report_page</title>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <h1>제보하기</h1>
+        </header>
+        <main>
+            <div class="top">
+            <div class="report_button">
+                <button id="write_report">제보글 작성하기</button>
+                <button id="latest_report">최신 제보</button>
+            </div>
+            <div id="category_filter">
+                <p>카테고리별 필터</p>
+                 <select>
+                    <option value="" disabled selected>-----선택해주세요-----</option>
+                    <option value="sexual_harassment">성추행/성폭력</option>
+                    <option value="stalking">스토킹</option>
+                    <option value="corner">인적 드문 곳</option>
+                    <option value="other">기타위험</option>
+                </select>
+            </div>
+            </div>
+            <div id="write_report_content" class="tab_content">
+                <div class="location">
+                    <p>위치</p>
+                    <input type="url" name="address_input">
+                </div>
+                <div class="category">
+                    <p>위험 카테고리</p>
+                    <select>
+                        <option value="" disabled selected>-----선택해주세요-----</option>
+                        <option value="sexual_harassment">성추행/성폭력</option>
+                        <option value="stalking">스토킹</option>
+                        <option value="corner">인적 드문 곳</option>
+                        <option value="other">기타위험</option>
+                    </select>
+                </div>
+                <div class="upload_image">
+                    <p>사진첨부 (선택)</p>
+                    <input type="file" multiple>
+                </div>
+                <button id="post_report" type="submit">등록하기</button>
+            </div>
+            <div id="latest_report_content" class="tab_content">
+            </div>
+        </main>
+    </div>
+    <script src="report.js"></script>
+</body>
+</html>
