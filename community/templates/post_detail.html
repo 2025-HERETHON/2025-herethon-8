@@ -9,6 +9,18 @@
     <h1>{{ post.title }}</h1><hr>
     <p>작성자: {{ post.user.nickname }}</p>
     <p>조회수: {{ post.views }}</p>
+    <p>도움이 돼요 {{ post.like.count }}개</p>
+
+    {% if request.user in post.like.all %}
+        <a href="{% url 'community:like' post.id %}">
+            <button type="button">좋아요 취소</button>
+        </a>
+    {% else %}
+        <a href="{% url 'community:like' post.id %}">
+            <button type="button">좋아요</button>
+        </a>
+    {% endif %}
+
     <p>{{ post.content }}</p>
     {% if post.photo %}
         <img src="{{ post.photo.url }}" alt="게시글 이미지" width="300">

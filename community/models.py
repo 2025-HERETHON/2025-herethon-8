@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.conf import settings
+from users.models import User
 
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)    
@@ -9,20 +10,20 @@ class Post(models.Model):
     photo = models.ImageField(verbose_name="사진", blank=True, null=True, upload_to='post_photo')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    likes = models.ManyToManyField(
+    like = models.ManyToManyField(
             settings.AUTH_USER_MODEL,
             related_name='liked_posts',
             blank=True,
         )
     views = models.PositiveIntegerField(default=0)
-
-    def like_count(self):
-        return self.likes.count()
     
     def __str__(self):
         return self.title
     
-
+class Like(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='user_likes')
+    post = models.ForeignKey(to=Post, on_delete=models.CASCADE, related_name='post_likes')
+    
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)    

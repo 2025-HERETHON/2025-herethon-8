@@ -151,3 +151,16 @@ class CommentDeleteView(View):
         comment.delete()
         messages.success(request, "댓글이 삭제되었습니다.")
         return redirect('community:post_detail', pk=post_id)
+
+#게시글 공감
+
+@login_required
+def like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    user = request.user
+    
+    if user in post.like.all():
+        post.like.remove(user)
+    else:
+        post.like.add(user)
+    return redirect('community:post_detail', pk=post_id)

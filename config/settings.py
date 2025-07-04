@@ -38,11 +38,39 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'accounts',
     'users',
     'community',
     'mapview',
+    
+    'django.contrib.sites',   # 필수
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    
+    # 구글 소셜 로그인
+    'allauth.socialaccount.providers.google',
+    
+    'django_extensions',
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # 기존 로그인 유지
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth용
+]
+
+# 회원가입/로그인 관련 최신 설정 (deprecated 옵션 대체)
+ACCOUNT_LOGIN_METHODS = {'email'}  # 이메일로 로그인
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # 회원가입 필수 필드
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # 이메일 검증 옵션 ('none', 'optional', 'mandatory')
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+SOCIALACCOUNT_ADAPTER = 'accounts.adapter.MySocialAccountAdapter'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,6 +80,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    'allauth.account.middleware.AccountMiddleware',  # allauth 필수 미들웨어
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -59,11 +89,11 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [],  # 필요 시 템플릿 경로 추가
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
+                'django.template.context_processors.request',  # allauth에서 필요
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -129,7 +159,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL='users.User' #사용자 모델 변경
+AUTH_USER_MODEL = 'users.User'  # 사용자 모델 변경
 
-MEIDA_URL='/media/'
-MEDIA_ROOT=os.path.join(BASE_DIR,'media') #사용자 업로드 파일 폴더 지정정
+MEDIA_URL = '/media/'  # 오타 수정
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 사용자 업로드 파일 경로
