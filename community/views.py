@@ -26,7 +26,7 @@ def post_create_view(request):
             post.user = request.user
             post.save()
             messages.success(request, "게시글이 작성되었습니다.")
-            return redirect('community_list')
+            return redirect('community:community_list')
     else:
         form = PostForm()
     return render(request, 'post_form.html', {'form': form})
@@ -60,7 +60,7 @@ class PostDetailView(View):
         if form.is_valid():
             form.save()
             messages.success(request, "게시글이 수정되었습니다.")
-            return redirect('post_detail', pk=pk)
+            return redirect('community:post_detail', pk=pk)
 
         return render(request, 'post_form.html', {'form': form, 'post': post})
 
@@ -72,7 +72,7 @@ class PostDeleteView(View):
         post = get_object_or_404(Post, pk=pk, user=request.user)
         post.delete()
         messages.success(request, "게시글이 삭제되었습니다.")
-        return redirect('community_list')
+        return redirect('community:community_list')
 
 
 # 댓글
@@ -94,7 +94,7 @@ class CommentView(View):
                 form = CommentForm(instance=edit_comment)
             except Comment.DoesNotExist:
                 messages.error(request, "권한이 없습니다.")
-                return redirect('post_detail', post_pk=post.pk)
+                return redirect('community:post_detail', post_pk=post.pk)
 
         return render(request, 'post_detail.html', {
             'post': post,
@@ -125,13 +125,13 @@ class CommentView(View):
                     if parent:
                         if parent.parent is not None:
                             messages.error(request, "답글에는 다시 답글을 달 수 없습니다.")
-                            return redirect('post_detail', pk=post.pk)
+                            return redirect('community:post_detail', pk=post.pk)
                         comment.parent = parent
 
                 comment.save()
                 msg = "댓글이 수정되었습니다." if edit_comment_id else "댓글이 작성되었습니다."
                 messages.success(request, msg)
-                return redirect('post_detail', pk=post.pk)
+                return redirect('community:post_detail', pk=post.pk)
 
         comments = Comment.objects.filter(post=post, parent__isnull=True).order_by('-created_at')
         return render(request, 'post_detail.html', {
@@ -150,4 +150,4 @@ class CommentDeleteView(View):
         post_id = comment.post.pk
         comment.delete()
         messages.success(request, "댓글이 삭제되었습니다.")
-        return redirect('post_detail', pk=post_id)
+        return redirect('community:post_detail', pk=post_id)

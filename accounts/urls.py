@@ -8,7 +8,7 @@ urlpatterns = [
     path('login/',login,name='login'),
     path('logout/',logout,name="logout"),
     path("",mypage,name="mypage"),
-    path('myblog/',myblog,name="myblog"),
+    path('mypost/',mypost,name="mypost"),
     path('myreport/',myreport,name="myreport"),
-    path('hometest/', hometest, name='hometest'),
+    path('delete/', delete_account, name='delete_account'),
 ]

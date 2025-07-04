@@ -3,7 +3,9 @@ from .forms import SignUpForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-#from blog.models import Post
+from community.models import Post
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 
@@ -15,7 +17,7 @@ def signup(request):
     form=SignUpForm(request.POST)
     if form.is_valid():
         form.save()
-        return redirect('accounts:hometest')
+        return redirect('mapview:mainmap')
     else:
         return render(request,'accounts/signup.html',{'form':form})
 
@@ -26,13 +28,13 @@ def login(request):
     form=AuthenticationForm(request,request.POST)
     if form.is_valid():
         auth_login(request,form.user_cache)
-        return redirect('accounts:hometest')
+        return redirect('mapview:mainmap')
     return render(request,'accounts/login.html',{'form':form})
 
 def logout(request):
     if request.user.is_authenticated:
         auth_logout(request)
-    return redirect('accounts:hometest')
+    return redirect('mapview:mainmap')
 
 def mypage(request):
     if request.method=="POST":
@@ -43,13 +45,10 @@ def mypage(request):
             request.user.save()
     return render(request,'accounts/mypage.html')
 
-def myblog(request):
-    #Todo: 게시글 연결
-    #posts=request.user.posts.all().order_by('-id')
-    #posts = Post.objects.filter(author=request.user).order_by('-id')
+def mypost(request):
+    posts = Post.objects.filter(user=request.user).order_by('-id')
     
-    #{"posts":posts}
-    return render(request,"accounts/mypost.html")
+    return render(request,"accounts/mypost.html",{"posts":posts})
 
 def myreport(request):
     #Todo: 제보 연결
@@ -59,8 +58,16 @@ def myreport(request):
     #{"posts":posts}
     return render(request,"accounts/myreport.html")
 
+@login_required
+def delete_account(request):
+    if request.method == "POST":
+        user = request.user
+        user.delete()
+        logout(request)
+        messages.success(request, "회원 탈퇴가 완료되었습니다.")
+        return redirect('mapview:mainmap')
 
 
-#테스트용 페이지 렌더링
-def hometest(request):
-    return render(request, 'accounts/hometest.html')
+#메인 페이지 렌더링
+def mainmap(request):
+    return render(request, 'mapview/mainmap.html')

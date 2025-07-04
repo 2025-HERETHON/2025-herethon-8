@@ -7,11 +7,11 @@
     <title>Document</title>
 </head>
 <body>
-    <a href="{% url 'accounts:hometest' %}">홈으로</a>
+    <a href="{% url 'mapview:mainmap' %}">홈으로</a>
 
     <h2>마이페이지</h2>
     
-    <a href="{% url 'accounts:myblog' %}">작성한 글</a><br>
+    <a href="{% url 'accounts:mypost' %}">작성한 글</a><br>
     <a href="{% url 'accounts:myreport' %}">내 제보</a><br>
 
     {% if request.user.profile_image %}
@@ -30,6 +30,18 @@
     <p>username: {{request.user.username}}</p>
     <p>email: {{request.user.email}}</p>
     <p>nickname: {{request.user.nickname}}</p>
-
+    <br><hr>
+        <a href="{% url 'accounts:logout' %}">로그아웃</a><br><br>
+        <form id="deleteForm" method="POST" action="{% url 'accounts:delete_account' %}">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirmDelete()">회원 탈퇴</button>
+        </form>
+        
+        <script>
+        function confirmDelete() {
+            return confirm("정말 탈퇴하시겠습니까?");
+        }
+        </script>
+    
 </body>
 </html>

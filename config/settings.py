@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'users',
     'community',
+    'mapview',
 ]
 
 MIDDLEWARE = [
