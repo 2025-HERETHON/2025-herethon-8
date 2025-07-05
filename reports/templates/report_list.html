@@ -13,7 +13,7 @@
     <ul>
         {% for report in reports %}
             <li>
-                <a href="{% url 'reports:report_edit' report.pk %}">
+                <a href="{% url 'reports:report_detail' report.pk %}">
                     <strong>{{ report.title }}</strong>
                 </a><br>
                 작성자: {{ report.user.nickname }} |
