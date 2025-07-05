@@ -10,10 +10,36 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+
+        <!-- 기존 사진 보여주기 -->
+        {% if post.photo %}
+            <div id="photo-preview">
+                <img src="{{ post.photo.url }}" alt="기존 이미지" width="200">
+                <button type="button" id="delete-photo-button">삭제</button>
+            </div>
+            <input type="hidden" name="delete_photo" id="delete_photo" value="">
+        {% endif %}
+
         <button type="submit">작성 완료</button>
     </form>
 
     <br>
     <a href="{% url 'community:community_list' %}">← 게시글 목록으로</a>
+
+    <script>
+        const deleteButton = document.getElementById("delete-photo-button");
+        const deleteInput = document.getElementById("delete_photo");
+
+        if (deleteButton) {
+            deleteButton.addEventListener("click", function () {
+                // 기존 이미지 삭제 요청 처리
+                deleteInput.value = "true";
+                const preview = document.getElementById("photo-preview");
+                if (preview) {
+                    preview.remove();
+                }
+            });
+        }
+    </script>
 </body>
 </html>

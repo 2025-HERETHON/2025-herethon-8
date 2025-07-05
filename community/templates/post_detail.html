@@ -25,26 +25,39 @@
     {% if post.photo %}
         <img src="{{ post.photo.url }}" alt="게시글 이미지" width="300">
     {% endif %}
+
+    {# 게시글 수정/삭제 버튼 (작성자 본인만) #}
+    {% if request.user == post.user %}
+            <a href="{% url 'community:post_detail' post.pk %}?edit=true"><button>게시글 수정</button></a>
+            <form method="post" action="{% url 'community:post_delete' post.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">게시글 삭제</button>
+            </form>
+        </p>
+    {% endif %}
+
     <hr>
 
-<form method="post" action="{% url 'community:comment_view' post.pk %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">댓글 등록</button>
-</form>
+    <form method="post" action="{% url 'community:comment_view' post.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">댓글 등록</button>
+    </form>
 
     <h2>댓글 목록</h2>
-{% if comments %}
+
     {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-        {{ message }}
-      </li>
-    {% endfor %}
-  </ul>
-{% endif %}
-    <ul>
+        <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if comments %}
+        <ul>
         {% for comment in comments %}
             <li>
                 {% if comment.is_anonymous %}
@@ -55,10 +68,29 @@
                 : {{ comment.content }}
                 <small>({{ comment.created_at|date:"Y-m-d H:i" }})</small>
 
+                {# 수정/삭제 버튼 (작성자만) #}
+                {% if request.user == comment.user %}
+                    {% if edit_comment_id|default:'' == comment.pk|stringformat:"s" %}
+                        <form method="post" action="{% url 'community:comment_view' post.pk %}?edit={{ comment.pk }}">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <input type="hidden" name="edit_comment_id" value="{{ comment.pk }}">
+                            <button type="submit">[수정 완료]</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'community:comment_view' post.pk %}?edit={{ comment.pk }}">[수정]</a>
+                    {% endif %}
+
+                    <form method="post" action="{% url 'community:comment_delete' comment.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('댓글을 삭제하시겠습니까?')">[삭제]</button>
+                    </form>
+                {% endif %}
+
                 {# 답댓글 출력 #}
                 {% if comment.replies.all %}
                     <ul>
-                        {% for reply in comment.replies.all %}
+                    {% for reply in comment.replies.all %}
                         <li>
                             {% if reply.is_anonymous %}
                                 익명
@@ -67,21 +99,27 @@
                             {% endif %}
                             : {{ reply.content }}
                             <small>({{ reply.created_at|date:"Y-m-d H:i" }})</small>
+
+                            {# 답댓글 수정/삭제 (작성자만) #}
+                            {% if request.user == reply.user %}
+                                <a href="{% url 'community:comment_view' post.pk %}?edit={{ reply.pk }}">[수정]</a>
+                                <form method="post" action="{% url 'community:comment_delete' reply.pk %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" onclick="return confirm('답댓글을 삭제하시겠습니까?')">[삭제]</button>
+                                </form>
+                            {% endif %}
                         </li>
-                    {% empty %}
-                        <li>답댓글 없음</li>
                     {% endfor %}
                     </ul>
                 {% endif %}
             </li>
         {% endfor %}
-    </ul>
-{% else %}
-    <p>댓글이 없습니다.</p>
-{% endif %}
+        </ul>
+    {% else %}
+        <p>댓글이 없습니다.</p>
+    {% endif %}
 
     <hr>
-
     <p><a href="{% url 'community:community_list' %}">← 목록으로</a></p>
 </body>
 </html>
