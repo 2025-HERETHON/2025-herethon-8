@@ -1,13 +1,12 @@
 from rest_framework import serializers
 from .models import Post, Comment
-from accounts.models import Profile
 
 class PostSerializer(serializers.ModelSerializer):
     nickname = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ['id', 'user', 'nickname', 'title', 'content', 'created_at', 'likes', 'views']
+        fields = ['id', 'user', 'nickname', 'title', 'content', 'created_at', 'like', 'views']
         read_only_fields = ['user']  
     
     def get_nickname(self, obj):

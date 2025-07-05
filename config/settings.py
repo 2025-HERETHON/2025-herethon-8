@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'community',
     'mapview',
+    'reports',
     
     'django.contrib.sites',   # 필수
     'allauth',
