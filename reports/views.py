@@ -26,6 +26,7 @@ def report_create_view(request):
             report.user = request.user
             report.save()
 
+
             # 여러 이미지 저장 처리
             for image in request.FILES.getlist('photos'):
                 ReportPhoto.objects.create(report=report, image=image)
@@ -61,8 +62,26 @@ class ReportDetailView(View):
         })
     def post(self, request, pk):
         # 제보 수정
-        report = get_object_or_404(Report, pk=pk, user=request.user)
+        report = get_object_or_404(Report, pk=pk)
+
+        # 관리자X- 자신의 글만 수정 가능
+        if not request.user.is_staff and report.user != request.user:
+            messages.error(request, "수정 권한이 없습니다.")
+            return redirect('reports:report_detail', pk=pk)
+        
+        # 관리자O- status만 수정 가능
+        if request.user.is_staff and not request.POST.get("title"):
+            new_status = request.POST.get("status")
+            if new_status is not None and new_status.isdigit():
+                report.status = int(new_status)
+                report.save(update_fields=["status"])
+                messages.success(request, "제보 상태가 변경되었습니다.")
+            else:
+                messages.error(request, "올바른 상태 값을 선택해주세요.")
+            return redirect('reports:report_detail', pk=pk)
+    
         form = ReportForm(request.POST, instance=report)
+
         if form.is_valid():
             report = form.save()
 

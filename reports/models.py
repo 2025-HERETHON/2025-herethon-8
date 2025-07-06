@@ -9,10 +9,10 @@ class Report(models.Model):
     longitude = models.FloatField()  # 경도
 
     CATEGORY_CHOICES = [
-        ('0', '성추행/성폭력'),
-        ('1', '스토킹'),
-        ('2', '인적 드문 곳'),
-        ('3', '기타 위험'),
+        (0, '성추행/성폭력'),
+        (1, '스토킹'),
+        (2, '인적 드문 곳'),
+        (3, '기타 위험'),
     ]
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES)
     

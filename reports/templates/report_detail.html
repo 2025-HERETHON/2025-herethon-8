@@ -32,14 +32,31 @@
 
     <hr>
 
-    <!-- 수정/삭제 버튼 (작성자에게만 표시) -->
-    {% if user == report.user %}
+    <!-- 관리자만 상태 변경 가능 -->
+    {% if request.user.is_staff %}
+        <form action="{% url 'reports:report_detail' report.pk %}" method="POST">
+            {% csrf_token %}
+            <label for="status">제보 상태:</label>
+            <select name="status" id="status">
+                {% for value, label in report.STATUS_CHOICES %}
+                    <option value="{{ value }}" {% if report.status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" onclick="return confirm('상태를 변경하시겠습니까?')">상태 저장</button>
+        </form>
+    {% endif %}
+
+    <!-- 작성자만 본문 수정/삭제 가능 -->
+    {% if request.user == report.user %}
         <form action="{% url 'reports:report_delete' report.pk %}" method="POST" style="display: inline;">
             {% csrf_token %}
             <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
         </form>
+
         <a href="{% url 'reports:report_detail' report.pk %}?edit=true">
-            <button>수정</button>
+            <button>본문 수정</button>
         </a>
     {% endif %}
 
