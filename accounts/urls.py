@@ -11,4 +11,7 @@ urlpatterns = [
     path('mypost/',mypost,name="mypost"),
     path('myreport/',myreport,name="myreport"),
     path('delete/', delete_account, name='delete_account'),
+    path('edit/', profile_edit, name='profile_edit'),
+    path('terms/', terms_of_service_view, name='terms_of_service'),
+    path('privacy/', privacy_policy_view, name='privacy_policy'),
 ]

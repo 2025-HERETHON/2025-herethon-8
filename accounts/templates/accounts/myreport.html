@@ -8,7 +8,11 @@
 <body>
     <a href="{% url 'mapview:mainmap' %}">홈으로</a>
     <h2>내 제보</h2><hr>
+    <p>Nickname: {{ request.user.nickname }}</p>
 
-    
+    {% for report in reports %}
+    <h2><a href="{% url 'reports:report_detail' report.id %}">{{report.title}}</a></h2>
+    {{ report.created_at }}
+    {% empty %} 제보가 없습니다. {% endfor %}
 </body>
 </html>
