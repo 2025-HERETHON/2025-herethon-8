@@ -14,7 +14,8 @@ class Report(models.Model):
         (2, '인적 드문 곳'),
         (3, '기타 위험'),
     ]
-    category = models.CharField(max_length=10, choices=CATEGORY_CHOICES)
+    category = models.IntegerField(choices=CATEGORY_CHOICES)
+
     
     STATUS_CHOICES = (
         (0, '검토중'),

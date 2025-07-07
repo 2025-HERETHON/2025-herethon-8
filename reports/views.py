@@ -4,6 +4,8 @@ from django.views.decorators.http import require_http_methods
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.views import View
+from django.db import models
+
 
 from .models import Report, ReportPhoto
 from .forms import ReportForm
@@ -11,7 +13,13 @@ from .forms import ReportForm
 # 제보 리스트 조회
 @login_required
 def report_list_view(request):
-    reports = Report.objects.all().order_by('-created_at')
+    if request.user.is_staff:
+        reports = Report.objects.all().order_by('-created_at')
+    else:
+        reports = Report.objects.filter(
+            models.Q(status=1) | models.Q(user=request.user)
+        ).order_by('-created_at')
+
     return render(request, 'report_list.html', {'reports': reports})
 
 
@@ -45,6 +53,11 @@ class ReportDetailView(View):
     def get(self, request, pk):
         report = get_object_or_404(Report, pk=pk)
 
+        #승인되지 않은 제보(0: 검토중, 2: 반려)는 관리자나 작성자만 접근 가능
+        if report.status != 1:  # 승인된 상태가 아니라면
+            if request.user != report.user and not request.user.is_staff:
+                return redirect('reports:report_list')  
+
         form = ReportForm()
 
         # 쿼리 파라미터에 edit=true가 있으면 수정 폼 보여주기
@@ -60,16 +73,17 @@ class ReportDetailView(View):
             'report': report,
             'form': form,
         })
+
     def post(self, request, pk):
         # 제보 수정
         report = get_object_or_404(Report, pk=pk)
 
-        # 관리자X- 자신의 글만 수정 가능
+        # 관리자X - 자신의 글만 수정 가능
         if not request.user.is_staff and report.user != request.user:
             messages.error(request, "수정 권한이 없습니다.")
             return redirect('reports:report_detail', pk=pk)
         
-        # 관리자O- status만 수정 가능
+        # 관리자O - 상태(status)만 수정 가능
         if request.user.is_staff and not request.POST.get("title"):
             new_status = request.POST.get("status")
             if new_status is not None and new_status.isdigit():
@@ -79,7 +93,8 @@ class ReportDetailView(View):
             else:
                 messages.error(request, "올바른 상태 값을 선택해주세요.")
             return redirect('reports:report_detail', pk=pk)
-    
+
+        # 일반 사용자의 제보 내용 수정
         form = ReportForm(request.POST, instance=report)
 
         if form.is_valid():
@@ -104,6 +119,7 @@ class ReportDetailView(View):
             'form': form,
             'report': report,
         })
+
 
 # 제보 삭제
 @method_decorator(login_required, name='dispatch')
