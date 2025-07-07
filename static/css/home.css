@@ -37,7 +37,7 @@
     font-size: 14px;
 }
 #search_button{
-    background-image: url('search.png');
+    background-image: url('/static/img/search.png');
     border: transparent;
     width: 20px;
     height: 20px;
