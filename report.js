@@ -117,4 +117,4 @@ fileDOM.addEventListener('change',()=>{
 const post_report = document.getElementById('post_report');
 post_report.addEventListener('click',()=>{
     post_report.style.background="#E386AD";
-})
+});
