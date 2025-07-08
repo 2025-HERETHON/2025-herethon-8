@@ -29,9 +29,16 @@
             </div>
             </div>
             <div id="write_report_content" class="tab_content">
+                <div class="write_top">
                 <div class="location">
                     <p>위치</p>
-                    <input type="url" name="address_input">
+                    <input type="text" id="address_input" placeholder="이곳을 클릭하여 위치를 선택하세요" value="">
+                    <div id="map_tab" style="display: none;">
+                        <input type="text" id="address_search" placeholder="주소를 입력 후 Enter를 눌러주세요." value="">
+                        <div id="map"></div>
+                        <button id="finish">선택 완료</button>
+                    </div>
+                    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f4b20e6dcc5ea780a057025c44d35270&libraries=services"></script>
                 </div>
                 <div class="category">
                     <p>위험 카테고리</p>
@@ -43,11 +50,19 @@
                         <option value="other">기타위험</option>
                     </select>
                 </div>
-                <div class="upload_image">
-                    <p>사진첨부 (선택)</p>
-                    <input type="file" multiple>
                 </div>
-                <button id="post_report" type="submit">등록하기</button>
+                <div class="write_middle">
+                    <input type="text" id="title" placeholder="제목을 입력해주세요">
+                    <textarea id="letter" placeholder="내용을 입력해주세요"></textarea>
+                </div>
+                <div class="write_bottom">
+                    <div class="upload_image">
+                    <p>사진첨부 (선택)</p><p id="photo_upload_detail">*한 장씩 업로드해 주세요.</p>
+                    <input type="file" id="image_input" multiple accept="image/*">
+                    </div>
+                    <div id="preview"></div>
+                </div>
+                <button id="post_report">등록</button>
             </div>
             <div id="latest_report_content" class="tab_content">
             </div>
