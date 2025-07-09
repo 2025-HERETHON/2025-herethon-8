@@ -5,8 +5,7 @@ class Report(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)    
     title = models.CharField(max_length=200)
     content = models.TextField()
-    latitude = models.FloatField()   # 위도
-    longitude = models.FloatField()  # 경도
+    address = models.CharField(max_length=255)
 
     CATEGORY_CHOICES = [
         (0, '성추행/성폭력'),
