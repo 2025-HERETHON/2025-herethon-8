@@ -13,6 +13,8 @@ search_button.addEventListener('click',()=>{
     const search_address = document.getElementById('search_address');
     const input_value=search_address.value;
 
+    console.log('입력값:',input_value);
+
     if(input_value ===''){
             alert('주소를 입력하세요')
             return;
@@ -27,7 +29,14 @@ search_button.addEventListener('click',()=>{
             }
         });
 
-        loadCriminalMarkers(input_value);
+        //주소 입력값 가공(구 부분만 떼어내기)
+        const matches = input_value.match(/([가-힣]+구)/);
+        const queryParam = matches ? matches[1] : input_value;
+
+        console.log('API에 보낼 query:', queryParam);
+
+        // 가공된 값으로 호출
+        loadCriminalMarkers(queryParam);
 });
     
 
@@ -41,9 +50,9 @@ function loadCriminalMarkers(query) {
 
     const queryParams = new URLSearchParams();
     queryParams.append('query', query.trim());
-    console.log(`/api/criminal-locations/?${queryParams.toString()}`);
+    console.log(`http://127.0.0.1:8000/api/criminal-locations/?${queryParams.toString()}`);
 
-    fetch(`/api/criminal-locations/?${queryParams.toString()}`)
+    fetch(`http://127.0.0.1:8000/api/criminal-locations/?${queryParams.toString()}`)
 
         .then(response => {
             if (!response.ok) throw new Error("API 응답 실패");
@@ -85,5 +94,8 @@ function loadCriminalMarkers(query) {
             console.error("에러:", error);
             alert("데이터를 불러오지 못했습니다.");
         });
+
+        console.log('입력값:', search_address);
+
 }
 
