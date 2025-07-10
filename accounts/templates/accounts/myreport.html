@@ -1,18 +1,62 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/myreport.css' %}">
+    <title>myreport</title>
 </head>
 <body>
-    <a href="{% url 'mapview:mainmap' %}">홈으로</a>
-    <h2>내 제보</h2><hr>
-    <p>Nickname: {{ request.user.nickname }}</p>
+    <div id="wrap">
+        <header>
+            <h1>내 제보글</h1>
+        </header>
 
-    {% for report in reports %}
-    <h2><a href="{% url 'reports:report_detail' report.id %}">{{report.title}}</a></h2>
-    {{ report.created_at }}
-    {% empty %} 제보가 없습니다. {% endfor %}
+        <main>
+            <div class="filter">
+                <div id="category_filter">
+                    <p>카테고리별 필터</p>
+                    <select id="category_select">
+                        <option value="" disabled selected>-----선택해주세요-----</option>
+                        <option value="0">성추행/성폭력</option>
+                        <option value="1">스토킹</option>
+                        <option value="2">인적 드문 곳</option>
+                        <option value="3">기타위험</option>
+                    </select>
+                </div>
+
+                <div class="search_wrap">
+                    <input type="text" id="post_search" placeholder="게시물을 검색하세요">
+                    <button id="search_btn">검색</button>
+                </div>
+            </div>
+
+            <div id="reportList">
+                {% if reports %}
+                    {% for report in reports %}
+                        <div class="content_box">
+                            <div class="status">
+                                <p>{{ report.status }}</p> 
+                            </div>
+                            <div class="report_content">
+                                <h2>{{ report.title }}</h2>
+                                <p>{{ report.content }}</p>
+                                <div class="report_footer">
+                                    <span>도움이 돼요 {{ report.likes }}</span>
+                                    <span>댓글 {{ report.comments.count }}</span>
+                                </div>
+                            </div>
+                            <div class="report-image"></div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>작성한 제보글이 없습니다.</p>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <script src="{% static 'js/myreport.js' %}"></script>
 </body>
 </html>

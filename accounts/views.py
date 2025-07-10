@@ -55,11 +55,36 @@ def mypost(request):
     return render(request,"accounts/mypost.html",{"posts":posts})
 
 def myreport(request):
-    reports = Report.objects.filter(user=request.user).order_by('-id')
-    
+    if request.user.is_authenticated:
+        reports = Report.objects.filter(user=request.user).order_by('-id')
+    else:
+        reports = [] 
     return render(request,"accounts/myreport.html",{'reports':reports})
 
-@login_required
+from django.http import JsonResponse
+def myreport_api(request):
+    # 가짜 데이터 (딱 네 디자인에 맞게)
+    dummy_reports = [
+        {
+            'title': '강남역에 이상한 사람이 있어요',
+            'content': '어제 밤 11시쯤 강남역에서 집까지 걸어갔는데, 이상한 사람이 있었습니다.',
+            'status': 0,
+            'category':2,
+            'likes': 3,
+            'comments_count': 5
+        },
+        {
+            'title': '홍대에 스토킹 당했습니다',
+            'content': '늦은 밤 누군가 따라와서 무서웠어요.',
+            'status': 1,
+            'category':0,
+            'likes': 7,
+            'comments_count': 2
+        }
+    ]
+
+    return JsonResponse({'reports': dummy_reports})
+#@login_required
 def delete_account(request):
     if request.method == "POST":
         user = request.user
@@ -69,7 +94,7 @@ def delete_account(request):
         return redirect('mapview:mainmap')
     
     
-@login_required
+#@login_required
 def profile_edit(request):
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
