@@ -8,6 +8,8 @@ import ssl
 from requests.adapters import HTTPAdapter
 from urllib3.poolmanager import PoolManager
 
+from reports.models import Report
+
 #메인 페이지 렌더링
 def mainmap(request):
     return render(request, 'mapview/home.html')
@@ -35,53 +37,82 @@ session = requests.Session()
 session.mount('https://', TLSAdapter())
 
 def get_criminal_locations(request):
-    service_key = settings.PUBLIC_DATA_API_KEY
+    selected_types = request.GET.getlist('types')
     query = request.GET.get('query', '').strip()
+
+    api_results= []
+    if 'api_notice' in selected_types:
+        service_key = settings.PUBLIC_DATA_API_KEY
+        query = request.GET.get('query', '').strip()
+        
+        print(f'[DEBUG] {query}')  # 디버그용
+
+        sggNm = ''
+        roadNm = ''
+
+        if query:
+            parts = query.split()
+            if len(parts) == 1:
+                # 한 단어만 입력 시, 구 이름 또는 도로명 중 하나로 처리 (예: 구 이름 우선)
+                sggNm = parts[0]
+            elif len(parts) >= 2:
+                sggNm = parts[0]
+                roadNm = ' '.join(parts[1:])
+
+        url = 'https://apis.data.go.kr/1383000/sais/SexualAbuseNoticeAddrService/getSexualAbuseNoticeAddrList'
+        params = {
+            'serviceKey': service_key,
+            'pageNo': 1,
+            'numOfRows': 100,
+            'type': 'json',
+        }
+
+        if sggNm:
+            params['sggNm'] = sggNm
+        if roadNm:
+            params['roadNm'] = roadNm
+            
+        try:
+            response = session.get(url, params=params, verify=False)
+
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({'error': f'API 요청 실패: {e}'}, status=500)
+
+        data = response.json()
+        items = data.get('response', {}).get('body', {}).get('items', {}).get('item', [])
+        if isinstance(items, dict):  # item이 하나뿐일 때 dict로 오는 경우
+            items = [items]
+
+        api_results = [{
+            'ctpvNm': item.get('ctpvNm'), 
+            'roadNmZip': item.get('roadNmZip'),
+            'sggNm': item.get('sggNm'),
+            'roadNm': item.get('roadNm'),
+        } for item in items]
     
-    print(f'[DEBUG] {query}')  # 디버그용
+    report_results = []
+    if 'user_report' in selected_types:
+        reports = Report.objects.filter(status=1)
 
-    sggNm = ''
-    roadNm = ''
+        if query:
+            reports = reports.filter(address__icontains=query)
 
-    if query:
-        parts = query.split()
-        if len(parts) == 1:
-            # 한 단어만 입력 시, 구 이름 또는 도로명 중 하나로 처리 (예: 구 이름 우선)
-            sggNm = parts[0]
-        elif len(parts) >= 2:
-            sggNm = parts[0]
-            roadNm = ' '.join(parts[1:])
+        report_results = [{
+            'address': r.address,
+            'category': r.category,
+            'title': r.title,
+            'content': r.content,
+        } for r in reports]
 
-    url = 'https://apis.data.go.kr/1383000/sais/SexualAbuseNoticeAddrService/getSexualAbuseNoticeAddrList'
-    params = {
-        'serviceKey': service_key,
-        'pageNo': 1,
-        'numOfRows': 100,
-        'type': 'json',
+    context = {
+        'selected_types': selected_types,
+        'api_results': api_results,
+        'report_results': report_results,
+        'query': query,
     }
 
-    if sggNm:
-        params['sggNm'] = sggNm
-    if roadNm:
-        params['roadNm'] = roadNm
-        
-    try:
-        response = session.get(url, params=params, verify=False)
+    if request.GET.get('format') == 'json':
+        return JsonResponse(context)
 
-        response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        return JsonResponse({'error': f'API 요청 실패: {e}'}, status=500)
-
-    data = response.json()
-    items = data.get('response', {}).get('body', {}).get('items', {}).get('item', [])
-    if isinstance(items, dict):  # item이 하나뿐일 때 dict로 오는 경우
-        items = [items]
-
-    results = [{
-        'ctpvNm': item.get('ctpvNm'), 
-        'roadNmZip': item.get('roadNmZip'),
-        'sggNm': item.get('sggNm'),
-        'roadNm': item.get('roadNm'),
-    } for item in items]
-
-    return JsonResponse(results, safe=False)
+    return render(request, 'mapview/home.html', context)
