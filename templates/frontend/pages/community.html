@@ -1,0 +1,39 @@
+{% load static %}
+{% include 'components/topbar.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커뮤니티</title>
+    <link rel="stylesheet" href="{% static 'css/community.css' %}">
+    <script src="{% static 'js/load_components.js' %}" defer></script>
+    <script src="{% static 'js/community.js' %}" defer></script>
+</head>
+<body>
+    <header>
+    <div class="title-text">커뮤니티</div>
+
+    <div class="header-right">
+
+    <div class="search-wrapper">
+    <input type="text" class="search-bar" id="search-bar" placeholder="   게시글을 검색하세요" />
+    <img class="search-icon" src="{% static 'img/search.png' %}"/>
+    </div>
+    <!-- 배포시 url 변경 -->
+    <button class="new-btn" id="new-btn" onclick="window.location.href='/community/post/create/'">새 게시글 작성</button>
+    </div> 
+    
+    </header>
+    
+    <main>
+    <div class="content-wrraper">
+        <div class="content-main">
+        <div class="title" id="title"></div>
+        <div class="content" id="content"></div>
+        </div>
+    </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제보 상세</title>
+</head>
+<body>
+
+
+
+    <h1>{{ report.title }}</h1>
+
+    <p>작성자: {{ report.user.nickname }}</p>
+    <p>작성일: {{ report.created_at|date:"Y-m-d H:i" }}</p>
+    <p>카테고리: {{ report.get_category_display }}</p>
+    <p>내용: {{ report.content }}</p>
+
+    <h3>위치 정보</h3>
+    <p>위도: {{ report.latitude }}</p>
+    <p>경도: {{ report.longitude }}</p>
+
+    <hr>
+
+    <h3>첨부 사진</h3>
+    {% if report.photos.all %}
+        <div>
+            {% for photo in report.photos.all %}
+                <img src="{{ photo.image.url }}" alt="첨부 사진" width="300" style="margin: 10px;">
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>첨부된 사진이 없습니다.</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- 관리자만 상태 변경 가능 -->
+    {% if request.user.is_staff %}
+        <form action="{% url 'reports:report_detail' report.pk %}" method="POST">
+            {% csrf_token %}
+            <label for="status">제보 상태:</label>
+            <select name="status" id="status">
+                {% for value, label in report.STATUS_CHOICES %}
+                    <option value="{{ value }}" {% if report.status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" onclick="return confirm('상태를 변경하시겠습니까?')">상태 저장</button>
+        </form>
+        {% else %}
+        <!-- 일반 사용자: 상태 보기만 -->
+        <p><strong>제보 상태:</strong>
+            {% for value, label in report.STATUS_CHOICES %}
+                {% if report.status == value %}
+                    {{ label }}
+                {% endif %}
+            {% endfor %}
+        </p>
+    {% endif %}
+
+    <!-- 작성자만 본문 수정/삭제 가능, 승인된 제보는 제외 -->
+    {% if request.user == report.user and report.status != 1 %}
+    <form action="{% url 'reports:report_delete' report.pk %}" method="POST" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+    </form>
+
+    <a href="{% url 'reports:report_detail' report.pk %}?edit=true">
+        <button>본문 수정</button>
+    </a>
+    {% endif %}
+
+
+    <br><br>
+    <a href="{% url 'reports:report_list' %}">← 제보 목록으로</a>
+</body>
+</html>

@@ -1,0 +1,90 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(to bottom, #FFEDF2, #FFF8FA,#FFFFFF); 
+  }
+body{
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+.login-container{
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0px 4px 10px 2px rgba(0, 0, 0, 0.2) ;
+    width: 704px;
+    height: auto;
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    border-radius: 20px;
+    padding: 0;
+}
+
+.login-title{
+    margin-top: 100px;
+    font-weight: 600;
+    font-size: 24px;
+}
+.google-container{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 296px;
+    height: 58px;
+    border: solid #929292 1px;
+    border-radius: 30px;
+    background-color: #FFFFFF;
+    align-items: center;
+    margin-bottom: 60px;
+    justify-self: center;
+    }
+    .toGoogle-img{
+        margin-left: 40px;
+        width:46px;
+        height: 46px;
+    }
+    .toGoogle-btn{
+        margin-right: 45px;
+        border:none;
+        background-color: #FFFFFF;
+        font-size: 18px;
+        font-weight: 600;
+    }
+.login-form{
+    margin-top: 60px;
+}
+.form-group{
+display:flex;
+flex-direction: column;
+align-items: flex-start;
+}
+label{
+    font-size: 16px;
+}
+input{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width:434px;
+    height: 68px;
+    border-radius: 20px;
+    border: solid 1px black;
+
+}
+
+.sign{
+    margin-top: 60px;
+    font-size: 16px;
+    color: #929292;
+}
+
+.login-btn{
+    width: 146px;
+    height: 52px;
+    border-radius: 16px;
+    background-color:#FFFFFF;
+    border:solid #E386AD 2px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}

@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{% url 'mapview:mainmap' %}">홈으로</a>
+
+    <h2>마이페이지</h2>
+    
+    <a href="{% url 'accounts:mypost' %}">작성한 글</a><br>
+    <a href="{% url 'accounts:myreport' %}">내 제보</a><br>
+
+    {% if request.user.profile_image %}
+        <img width="200px" src="{{ request.user.profile_image.url }}" alt="Profile Image">
+    {% else %}
+        <img width="200px" src="{% static 'img/profile.png' %}" alt="Default Profile">
+    {% endif %}
+
+    <!-- 프로필 수정 페이지로 이동 -->
+    <br>
+    <a href="{% url 'accounts:profile_edit' %}">
+        <button type="button">프로필 수정</button>
+    </a>
+
+    <p>username: {{ request.user.username }}</p>
+    <p>email: {{ request.user.email }}</p>
+    <p>nickname: {{ request.user.nickname }}</p>
+    <a href="{% url 'accounts:terms_of_service' %}">서비스 이용약관</a>
+    <a href="{% url 'accounts:privacy_policy' %}">개인정보처리방침</a><br>
+
+
+    <br><hr>
+    <a href="{% url 'accounts:logout' %}">로그아웃</a><br><br>
+
+    <form id="deleteForm" method="POST" action="{% url 'accounts:delete_account' %}">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirmDelete()">회원 탈퇴</button>
+    </form>
+    
+    <script>
+    function confirmDelete() {
+        return confirm("정말 탈퇴하시겠습니까?");
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(to bottom, #FFEDF2, #FFF8FA,#FFFFFF); 
+  }
+header{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items:center;
+    margin-top:80px;
+}
+.title-text{
+    font-size: 34px;
+    font-weight: 600;
+    margin-left:200px;
+    
+}
+main{
+    display:flex;
+    justify-content: center;
+
+}
+.content{
+    margin-top:60px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px 2px #00000040;
+    width:1093px;
+    min-height:701px ;
+    height:auto;
+    border-radius:16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-title{
+    padding-left: 60px;
+    margin-top:80px;
+    margin-bottom:40px;
+    border:none;
+    font-size: 24px;
+    font-weight: 600;
+    outline: none; 
+    width: 1000px;
+}
+
+.content-title::placeholder{
+    color:#929292;
+}
+.line{
+    color:#D9D9D9;
+   height:1px;
+    width:1025px;
+}
+.content-main{
+    display: block;
+    padding-left: 40px;
+    border:none;
+    font-size: 16px;
+    width: 1000px;
+    height: 300px;
+    margin: 40px auto;
+    outline: none; 
+}
+.content-main::placeholder{
+    color:#929292;
+}
+.content-main:focus{
+    outline: none; 
+}
+.photo{
+    width: 105px;
+    height: 32px;
+    margin-bottom: 60px;
+    padding-left: 40px;
+    font-size: 16px;
+}
+.file-label {
+    margin-left: 40px;
+    max-width: 180px;
+    width: auto;
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #E386AD;
+    cursor: pointer;
+    color: #ffffff;
+    border-radius: 16px;
+}
+
+#preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#preview-container img {
+    margin-left: 40px;
+    max-width: 150px;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.upload-btn{
+
+    width: 146px;
+    height: 52px;
+    font-size: 14px;
+    font-weight: 400;
+    background-color: #FFFFFF;
+    border: solid 2px #E386AD;
+    border-radius: 16px;
+    align-self: center;
+    margin-bottom: 60px;
+}

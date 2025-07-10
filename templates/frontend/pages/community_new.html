@@ -1,0 +1,38 @@
+{% load static %}
+{% include 'components/topbar.html' %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="{% static 'js/community_new.js' %}" defer></script>
+    <script src="{% static 'js/load_components.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/community_new.css' %}">
+    
+    <title>게시글 작성</title>
+</head>
+<body>
+        <header>
+        <div class="title-text">게시글 작성</div>
+        </header>
+        
+        <main>
+        <div class="content">
+            <input class="content-title" type="text" placeholder="제목을 입력해주세요."/> 
+            <hr class="line"></hr>
+            <textarea class="content-main" placeholder="내용을 입력해주세요"></textarea>  
+            <hr class="line"></hr>
+            <label for="photo" class="file-label">사진을 첨부해주세요 (선택)</label>
+            <input type="file" id="photo" class="photo" accept="image/*" multiple style="display: none;">
+            
+            <!-- 미리보기 이미지들이 들어갈 컨테이너 -->
+            <div id="preview-container">미리보기 컨테이너</div>
+            
+            <button class="upload-btn">등록</button> 
+        </div>
+       
+        </main>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{% load static %}
+{% include 'components/topbar.html' %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>community_view</title>
+    <link rel="stylesheet" href="{% static 'css/community_view.css' %}"/>
+    <script src="{% static 'js/load_components.js' %}" defer></script>
+    <script src="{% static 'js/community_view.js' %}" defer></script>
+</head>
+<body data-user-nickname="{{ request.user.nickname }}">
+    
+    <header>
+        <div id="topbar"></div>
+        <div class="title-text">커뮤니티</div>
+    </header>
+
+    <main>
+        <div class="content" id="content">
+            <div class="post-wrapper">
+                <div id="post-actions" class="post-actions"></div>
+                <div class="post-title" id="post-title">제목</div>
+                <div class="post-meta">
+                  <span class="post-nickname" id="post-nickname">👤닉네임</span>
+                  <span class="created-at" id="post-date">📅2025년 7월 5일 12:00</span>
+                  <span class="views" id="post-views">👁️조회수 0회</span>
+                  <span class="location" id="post-location">📍강남역</span>
+                </div>
+                <div class="post-content" id="post-content">
+                  본문 내용 표시
+                </div>
+                <div class="post-footer">
+                  <button class="like-btn">도움이 돼요 (<span id="post-like">0</span>)</button>
+                  <button class="comment-btn">댓글 (<span id="comment-count">0</span>)</button>
+                </div>
+              </div>
+        </div>
+
+        <div class="comment" id="comment">
+            <div class="comment-title">댓글 <span id="comment-total-count">0</span>개</div>
+
+            <div class="comment-form">
+              <textarea class="comment-input"id="comment-input"></textarea>
+              <div class="comment-options">
+                <label><input type="checkbox" id="anonymous-checkbox" /> 익명으로 작성하기</label>
+                <button class="submit-comment-btn" id="submit-comment-btn">댓글 작성</button>
+              </div>
+            </div>
+      
+            <div class="comment-list" id="comment-list">
+              <!-- 댓글과 대댓글 리스트가 여기에 동적으로 렌더링 -->
+              <div class="comment-item">
+                <div class="comment-header">
+                  <span class="nickname">익명</span>
+                  <span class="time">40분 전</span>
+                </div>
+                <div class="comment-content">혹시 몇 시까지 사람이 많나요? 12시 넘어서도 괜찮을까요? 저도 늦게 집에 가는 일이 많아서 걱정이에요 ㅠㅠ</div>
+                <div class="comment-actions">
+                  <button class="reply-btn">답글</button>
+                  <button class="delete-btn">삭제</button>
+                </div>
+      
+                <div class="reply-list">
+                  <div class="reply-item">
+                    <div class="reply-header">
+                    <span class="reply-nickname">김영희</span>
+                    <span class="reply-time">30분 전</span>
+                    </div>
+                    <span class="reply-content">저도 공감합니다!</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+        </div>
+
+    </main>
+</body>
+</html>
