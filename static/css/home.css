@@ -95,3 +95,35 @@ select{
     font-weight: 400;
     font-size: 14px;
 }
+.map_screen{
+    position: relative;
+}
+#marker_info{
+    width: 686px;
+    height: 96px;
+    border: transparent;
+    border-radius: 20px;
+    position: absolute;
+    background-color: white;
+    box-shadow:0px 4px 8px #000000;
+    z-index: 1;
+    bottom: 28px;
+    right: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.marker_element{
+    width: 130px;
+    height: 17px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: 25px;
+    font-size: 14px;
+}
+.marker_element>img{
+    width: 17px;
+    height: 17px;
+    object-fit: cover;
+}
