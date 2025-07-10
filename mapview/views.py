@@ -9,6 +9,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.poolmanager import PoolManager
 
 from reports.models import Report
+from datetime import datetime, timedelta
 
 #메인 페이지 렌더링
 def mainmap(request):
@@ -39,6 +40,8 @@ session.mount('https://', TLSAdapter())
 def get_criminal_locations(request):
     selected_types = request.GET.getlist('types')
     query = request.GET.get('query', '').strip()
+    date_range = request.GET.get('date_range', '')
+    selected_category = request.GET.get('category', '')
 
     api_results= []
     if 'api_notice' in selected_types:
@@ -95,8 +98,19 @@ def get_criminal_locations(request):
     if 'user_report' in selected_types:
         reports = Report.objects.filter(status=1)
 
+        # 주소 필터링
         if query:
             reports = reports.filter(address__icontains=query)
+
+        # 등록일 필터링
+        if date_range and date_range != "all":
+            months = int(date_range)
+            cutoff = datetime.now() - timedelta(days=30 * months)
+            reports = reports.filter(created_at__gte=cutoff)
+
+        # 카테고리 필터링
+        if selected_category != '':
+            reports = reports.filter(category=selected_category)
 
         report_results = [{
             'address': r.address,
