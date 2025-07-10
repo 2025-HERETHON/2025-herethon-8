@@ -23,3 +23,14 @@ fileDOM.addEventListener('change',()=>{
         reader.readAsDataURL(file);
      }
 });
+
+const my_report = document.getElementById('my_report');
+const my_post = document.getElementById('my_post');
+
+my_report.addEventListener('click',()=>{
+    window.location.href='myreports.html';
+})
+
+my_post.addEventListener('click',()=>{
+    window.location.href='myposts.html';
+})

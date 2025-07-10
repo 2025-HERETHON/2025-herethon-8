@@ -1,7 +1,7 @@
 #wrap{
     width: 1440px;
     height: 926px;
-    background: white;
+    background: linear-gradient(#FFEDF2,#FFF8FA,#FFFFFF);
     display: flex;
     flex-direction: column;
 }
@@ -20,7 +20,8 @@ main{
 .profile{
     width: 393px;
     height:701px;
-    border: 5px solid #D9D9D9;
+    border: 1px solid #D9D9D9;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -73,10 +74,11 @@ main{
     align-items: center;
     margin-top: 52px;
 }
-.my_report,.my_post{
+.profile_btn{
     width: 291px;
     height:72px;
-    background-color: #D9D9D9;
+    background-color: #FFEDF2;
+    border: transparent;
     border-radius: 12px;
     color:black;
     text-align: center;
@@ -84,15 +86,14 @@ main{
     align-items: center;
     position:relative
 }
-.my_report>p{
+.profile_btn>p{
     padding:28px;
-}
-.my_post>p{
-    padding:28px;
+    font-size: 16px;
 }
 #report_count,#post_count{
     position: absolute;
     right:28px;
+    font-size: 16px;
 }
 #edit_profile{
     background-color: transparent;
@@ -107,7 +108,8 @@ main{
 .setting{
     width: 704px;
     height:701px;
-    border: 5px solid #D9D9D9;
+    border: 1px solid #D9D9D9;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     position:relative;
 }
@@ -139,5 +141,8 @@ h3{
     font-size:16px;
     font-weight: 400;
     cursor:pointer;
+}
+#cancel{
+    color: #FF0000;
 }
 
