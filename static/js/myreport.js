@@ -1,25 +1,35 @@
 //게시물 검색
 function Searchreposts() {
   const post_search = document.getElementById('post_search');
-  const category_filter = document.getElementById('category_select'); 
+  const category_select = document.getElementById('category_select'); 
   
-  post_search.addEventListener('input', () => {
+  const handleSearch = () => {
     const keyword = post_search.value.toLowerCase();
-    const reports = document.querySelectorAll('.report_content'); 
+    const selectedCategory = category_select.value;  
+
+    const reports = document.querySelectorAll('.report_content');
 
     reports.forEach(report => {  
       const title = report.querySelector('h2').innerText.toLowerCase();
       const content = report.querySelector('p').innerText.toLowerCase();
+      const categoryText=report.querySelector('.category').innerText;
 
-      if (title.includes(keyword) || content.includes(keyword)) {
+      const matchesKeyword = keyword === '' || title.includes(keyword) || content.includes(keyword);
+      const matchesCategory = selectedCategory === '' || categoryText.includes(getCategoryText(Number(selectedCategory)));
+
+      if (matchesKeyword && matchesCategory) {
         report.closest('.content_box').style.display = 'flex';
       } else {
         report.closest('.content_box').style.display = 'none';
       }
     });
-  });
-}
+  };
 
+  post_search.addEventListener('input', handleSearch);
+  category_select.addEventListener('change', handleSearch);
+  document.getElementById('search_btn').addEventListener('click', handleSearch);
+}
+  
 fetch('/accounts/api/myreport/', {
   method: 'GET',
   headers: {
@@ -55,6 +65,7 @@ function plusReports(reports) {
         <div class="report_content">
           <h2>${report.title}</h2>
           <p>${report.content}</p>
+          <p class="category">카테고리: ${categoryText}</p>
           <div class="report_footer">
             <span>도움이 돼요 ${report.likes}</span>
             <span>댓글 ${report.comments_count}</span>
