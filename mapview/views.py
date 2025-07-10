@@ -103,6 +103,7 @@ def get_criminal_locations(request):
             'category': r.category,
             'title': r.title,
             'content': r.content,
+            'created_at': r.created_at,
         } for r in reports]
 
     context = {
