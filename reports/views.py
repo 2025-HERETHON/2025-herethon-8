@@ -11,27 +11,29 @@ from .models import Report, ReportPhoto
 from .forms import ReportForm
 
 # 제보 리스트 조회
-@login_required
+#@login_required
 def report_list_view(request):
+    '''
     if request.user.is_staff:
         reports = Report.objects.all().order_by('-created_at')
     else:
         reports = Report.objects.filter(
             models.Q(status=1) | models.Q(user=request.user)
         ).order_by('-created_at')
-
+    '''
+    reports = Report.objects.all().order_by('-created_at')
     return render(request, 'report_list.html', {'reports': reports})
 
 
 
 # 제보 작성
-@login_required
+#@login_required
 def report_create_view(request):
     if request.method == "POST":
         form = ReportForm(request.POST, request.FILES)
         if form.is_valid():
             report = form.save(commit=False)
-            report.user = request.user
+            #report.user = request.user
             report.save()
 
 
@@ -47,6 +49,24 @@ def report_create_view(request):
 
 
 # 제보 상세
+class ReportDetailView(View):
+    def get(self, request, pk):
+        report = get_object_or_404(Report, pk=pk)
+        form = ReportForm()
+        return render(request, 'report_detail.html', {'report': report, 'form': form})
+
+    def post(self, request, pk):
+        report = get_object_or_404(Report, pk=pk)
+        form = ReportForm(request.POST, instance=report)
+        if form.is_valid():
+            report = form.save()
+            for image in request.FILES.getlist('photos'):
+                ReportPhoto.objects.create(report=report, image=image)
+            messages.success(request, "제보가 수정되었습니다.")
+            return redirect('reports:report_detail', pk=report.pk)
+        return render(request, 'report_form.html', {'form': form, 'report': report})
+
+'''
 @method_decorator(login_required, name='dispatch')
 class ReportDetailView(View):
     # 제보 상세 조회
@@ -55,6 +75,7 @@ class ReportDetailView(View):
 
         #승인되지 않은 제보(0: 검토중, 2: 반려)는 관리자나 작성자만 접근 가능
         if report.status != 1:  # 승인된 상태가 아니라면
+            
             if request.user != report.user and not request.user.is_staff:
                 return redirect('reports:report_list')  
 
@@ -119,10 +140,10 @@ class ReportDetailView(View):
             'form': form,
             'report': report,
         })
-
+'''
 
 # 제보 삭제
-@method_decorator(login_required, name='dispatch')
+#@method_decorator(login_required, name='dispatch')
 class ReportDeleteView(View):
     def post(self, request, pk):
         report = get_object_or_404(Report, pk=pk, user=request.user)

@@ -169,3 +169,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 사용자 업로드 파일 경�
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 PUBLIC_DATA_API_KEY = env('PUBLIC_DATA_API_KEY')
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
