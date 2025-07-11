@@ -333,6 +333,8 @@ h3{
     margin-top: 24px;
     height: 153px;
     background-color: #D9D9D9;
+    width: 155px;
+    height: 129px;
 }
 .fix_btn{
     position: absolute;
@@ -369,4 +371,28 @@ h3{
     position: absolute;
     left: 81px;
     bottom: 65px;
+}
+/* 제보하기 상세 이미지 사이즈 조절 */
+.detail_image img {
+    width: 155px;
+    height: 129px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+/* 충돌 방지 레이어 */
+.content_box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.report_content {
+    flex-grow: 1;
+    margin-right: 16px;
+}
+
+.report-image {
+    flex-shrink: 0;
 }
