@@ -206,53 +206,73 @@ input,select{
     top:87px;
     background-color: white;
 }
-.content_box{
+.content_box {
     display: flex;
-    justify-content: space-between; 
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
     border-bottom: 1px solid #D9D9D9;
-    padding-bottom: 22px;
-}
-.status{
-    width: 95px;
-    height: 42px;
-    border: transparent;
-    border-radius: 30px;
-    padding: 12px 16px;
-    box-sizing: content-box;
-    text-align: center;
-    font-size: 16px;
-    margin-top:34px ;
-    margin-left:71px;
-}
-.report_content{
-    margin-top: 40px;
-    margin-left: 40px;
-    gap: 14px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    margin-bottom: 12px;
     width: 100%;
-    height: 33%;
-   
-}
-.report_content>p{
-    width: 310px;
-}
-.report_footer{
-    margin-top:30px;
-    display: flex;
-    gap: 30px;
-    color: #929292;
-}
-.report-image{
-    width: 155px;
-    height: 129px;
-    object-fit: cover;
-    background-color:#EDEDED ;
-    margin-right: 49px;
-    margin-top: 51px;
-    position: absolute;
-    z-index: 1;
-    right: 43px;
+    box-sizing: border-box;
 }
 
+/* 상태 뱃지 */
+.status {
+    flex-shrink: 0;
+    width: 70px;
+    text-align: center;
+}
+.status p {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+    background-color: #FEEF9C; /* 검토중 */
+}
+.status p.approved {
+    background-color: #C4F1C4; /* 승인됨 */
+}
+
+/* 제보 내용 (카테고리 + 제목) */
+.report_content {
+    flex: 1;
+    margin: 0 40px;
+    text-align: left;
+}
+.report_content .category {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 4px;
+}
+.report_content h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+/* 이미지 썸네일 */
+.report-image {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    background-color: transparent;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.report-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 #report_detail{
     width: 1093px;
     height: 1305px;
@@ -262,10 +282,16 @@ input,select{
     border: 1px solid #D9D9D9;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
-.detail_status{
-    position: absolute;
-    top:47px;
-    left:84px;
+.detail_status p {
+    display: inline-block;
+    align-items: first baseline;
+    background-color: #FEEF9C;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    margin-right:980px;
 }
 .detail_top{
     border-bottom: 1px solid #D9D9D9;
