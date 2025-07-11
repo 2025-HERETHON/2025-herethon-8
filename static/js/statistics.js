@@ -1,12 +1,14 @@
-
 function loadData() {
     const query = document.getElementById("query").value.trim();
 
-    // 마커용 API
-    fetch(`/api/criminal-locations/?query=${encodeURIComponent(query)}`)
+    // types=api_notice를 반드시 포함시킴
+    fetch(`/api/criminal-locations/?query=${encodeURIComponent(query)}&format=json&types=api_notice`)
         .then(response => response.json())
-        .then(locations => {
-            renderLocations(locations);
+        .then(data => {
+            renderLocations(data.api_results); // <- 반드시 .api_results로 접근
+        })
+        .catch(err => {
+            console.error("데이터 로딩 오류:", err);
         });
 }
 
@@ -25,5 +27,3 @@ function renderLocations(locations) {
         tbody.appendChild(tr);
     });
 }
-
-
