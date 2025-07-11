@@ -1,109 +1,63 @@
-//게시물 검색
-function Searchreposts() {
-  const post_search = document.getElementById('post_search');
-  const category_select = document.getElementById('category_select'); 
-  
-  const handleSearch = () => {
-    const keyword = post_search.value.toLowerCase();
-    const selectedCategory = category_select.value;  
+document.addEventListener('DOMContentLoaded', () => {
+    const write_report = document.getElementById('write_report');
+    const latest_report = document.getElementById('latest_report');
+    const write_report_content = document.getElementById('write_report_content');
+    const latest_report_list = document.getElementById('latest_report_list');
+    const category_filter = document.getElementById('category_filter');
+    const report_detail = document.getElementById('report_detail');
+    const categorySelect = document.getElementById('category_select');
+    const searchInput = document.getElementById('post_search');
+    const searchButton = document.getElementById('search_btn');
 
-    const reports = document.querySelectorAll('.report_content');
+    // 🔍 게시글 필터 함수: 카테고리 + 키워드 모두 적용
+    function filterReports() {
+        const selectedValue = categorySelect.value;
+        const selectedText = categorySelect.options[categorySelect.selectedIndex].text.trim();
+        const keyword = searchInput.value.trim().toLowerCase();
 
-    reports.forEach(report => {  
-      const title = report.querySelector('h2').innerText.toLowerCase();
-      const content = report.querySelector('p').innerText.toLowerCase();
-      const categoryText=report.querySelector('.category').innerText;
+        const allBoxes = document.querySelectorAll('.content_box');
 
-      const matchesKeyword = keyword === '' || title.includes(keyword) || content.includes(keyword);
-      const matchesCategory = selectedCategory === '' || categoryText.includes(getCategoryText(Number(selectedCategory)));
+        allBoxes.forEach(box => {
+            const boxCategory = box.dataset.category;
+            const title = box.dataset.title?.toLowerCase() || '';
+            const content = box.dataset.content?.toLowerCase() || '';
 
-      if (matchesKeyword && matchesCategory) {
-        report.closest('.content_box').style.display = 'flex';
-      } else {
-        report.closest('.content_box').style.display = 'none';
-      }
-    });
-  };
+            const matchesCategory = selectedValue === '' || boxCategory === selectedText;
+            const matchesKeyword = keyword === '' || title.includes(keyword) || content.includes(keyword);
 
-  post_search.addEventListener('input', handleSearch);
-  category_select.addEventListener('change', handleSearch);
-  document.getElementById('search_btn').addEventListener('click', handleSearch);
-}
-  
-fetch('/accounts/api/myreport/', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    // 'Authorization': 'Bearer 토큰값'   <-- 토큰 필요하면 넣기
-  }
-})
-.then(response => response.json())
-.then(data => {
-  console.log(data); 
-  plusReports(data.reports); 
-  Searchreposts(); 
-})
-.catch(error => console.error('에러:', error));
+            if (matchesCategory && matchesKeyword) {
+                box.style.display = 'flex'; // 또는 'block'
+            } else {
+                box.style.display = 'none';
+            }
+        });
+    }
 
-//데이터 추가하기
-function plusReports(reports) {
-  const reportList = document.getElementById('reportList');
-  reportList.innerHTML = '';
+    // ✅ 이벤트 연결 (중복 제거)
+    if (categorySelect && searchInput && searchButton) {
+        categorySelect.addEventListener('change', filterReports);
+        searchButton.addEventListener('click', filterReports);
+        // 실시간 반영을 원하지 않으면 아래 줄 제거 가능
+        // searchInput.addEventListener('input', filterReports);
+    }
 
-  reports.forEach(report => {
-    const statusText = getStatusText(report.status);
-    const statusColor = getStatusColor(report.status);
-    const categoryText = getCategoryText(report.category);
+    // ------------------------- 기타 기능 -------------------------
 
-    const firstImage = report.photos && report.photos.length > 0 ? report.photos[0].image : '/static/images/no-image.png';
+    // CSRF 토큰 쿠키에서 가져오기
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const trimmed = cookie.trim();
+                if (trimmed.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(trimmed.slice(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 
-    const reportHTML = `
-      <div class="content_box">
-        <div class="status" style="background-color: ${statusColor};">
-          <p>${statusText}</p>
-        </div>
-        <div class="report_content">
-          <h2>${report.title}</h2>
-          <p>${report.content}</p>
-          <p class="category">카테고리: ${categoryText}</p>
-          <div class="report_footer">
-            <span>도움이 돼요 ${report.likes}</span>
-            <span>댓글 ${report.comments_count}</span>
-          </div>
-        </div>
-        <div class="report-image">
-          <img src="${firstImage}" alt="제보 이미지" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-        </div>
-      </div>
-    `;
-    reportList.insertAdjacentHTML('beforeend', reportHTML);
-  });
-}
-//상태
-function getStatusText(status) {
-  const statusMap = {
-    0: '검토중',
-    1: '승인됨',
-    2: '반려'
-  };
-  return statusMap[status] || '미정';
-}
-
-function getStatusColor(status) {
-  const statusColorMap = {
-    0: '#FFFB7F',    
-    1: '#B2FFC0',    
-    2: '#FF9E9E'     
-  };
-  return statusColorMap[status] || '#D9D9D9';
-}
-
-function getCategoryText(category) {
-  const categoryMap = {
-    0: '성추행/성폭력',
-    1: '스토킹',
-    2: '인적 드문 곳',
-    3: '기타위험'
-  };
-  return categoryMap[category] || '미지정';
-}
+    // ✏️ 수정, 삭제 버튼 기능, 지도 관련 등 다른 로직은 기존대로 유지하시면 됩니다
+});

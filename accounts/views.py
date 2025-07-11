@@ -17,6 +17,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 import time
+import django.db.models as models
 
 #회원가입
 def signup(request):
@@ -78,7 +79,9 @@ def my_page_view(request):
 
 #FE: 마이 페이지_제보글 렌더링 추가
 def myreport_page_view(request):
-    return render(request, 'frontend/pages/myreport.html')
+    reports = Report.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'frontend/pages/myreport.html', {'reports': reports})
+
 #FE: 마이 페이지_게시글 렌더링 추가
 def mypost_page_view(request):
     return render(request, 'frontend/pages/mypost.html')
@@ -123,12 +126,12 @@ def logout(request):
 def mypost(request):
     posts = Post.objects.filter(user=request.user).order_by('-id')
     
-    return render(request,"fronted/page/mypost.html",{"posts":posts})
+    return render(request,"frontend/page/mypost.html",{"posts":posts})
 
 def myreport(request):
     reports = Report.objects.filter(user=request.user).order_by('-id')
     
-    return render(request,"accounts/myreport.html",{'reports':reports})
+    return render(request,"frontend/page/myreport.html",{'reports':reports})
 
 
     
