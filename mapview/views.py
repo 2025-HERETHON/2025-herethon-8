@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from django.db.models import Count
 import re
 from collections import defaultdict
+from django.utils.timezone import localtime
 
 #메인 페이지 렌더링
 def mainmap(request):
@@ -296,6 +297,7 @@ def get_filtered_criminal_data(request):
         'report_results': report_results,
         'query': query,
         'warning_locations': get_warning_locations(),
+        'recent_report': get_recent_warning(),
     }
 
     if request.GET.get('format') == 'json':
@@ -320,7 +322,22 @@ def get_warning_locations():
             sigungu_counts[sigungu] += 1
 
     sorted_locations = sorted(sigungu_counts.items(), key=lambda x: x[1], reverse=True)
+
+    category_map = {
+            0: '성추행/성폭행',
+            1: '스토킹',
+            2: '인적 드문 곳',
+            3: '기타위험'
+        }
+    category = category_map.get(report.category)
+
     if sorted_locations:
         top_sigungu, top_count = sorted_locations[0]
-        return {'address': top_sigungu, 'count': top_count}
+        return {'address': top_sigungu, 
+                'count': top_count, 
+                'created_at': localtime(report.created_at),
+                'category': category,
+                }
     return None
+
+

@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     
     'django_extensions',
+    'django.contrib.humanize',
 ]
 
 SITE_ID = 1
