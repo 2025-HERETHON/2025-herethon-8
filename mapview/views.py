@@ -69,9 +69,6 @@ def mainmap(request):
 def map_page_view(request):
     return render(request, 'frontend/pages/map.html')
 
-# 통계 페이지 렌더링
-def statistics(request):
-    return render(request, 'mapview/statistics.html')
 
 # SSL 인증서 끄기 (테스트용)
 class TLSAdapter(HTTPAdapter):
@@ -341,3 +338,21 @@ def get_warning_locations():
     return None
 
 
+def statistics(request):
+    reports = Report.objects.filter(status=1)  # 승인된 제보만
+
+    # 지역별 신고 수 집계
+    region_counts = defaultdict(int)
+    for report in reports:
+        region = extract_sigungu(report.address)
+        if region:
+            region_counts[region] += 1
+
+    # 딕셔너리를 리스트로 변환 (통계표에 편리하게 넘기기 위해)
+    region_counts_list = sorted(region_counts.items(), key=lambda x: x[1], reverse=True)
+
+    context = {
+        'region_counts': region_counts_list,
+    }
+
+    return render(request, 'mapview/statistics.html', context)

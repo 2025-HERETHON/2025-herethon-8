@@ -5,7 +5,7 @@ class Report(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)    
     title = models.CharField(max_length=200)
     content = models.TextField()
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, default='주소 미지정') #FE: 초기 마이그레이션 때 null 값으로 인식 오류
 
     CATEGORY_CHOICES = [
         (0, '성추행/성폭력'),

@@ -3,34 +3,159 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>성범죄자 위치 정보 테스트</title>
-    <link rel="stylesheet" href="{% static 'css/statistics.css' %}">
+  <meta charset="UTF-8" />
+  <title>성범죄자 위치 정보 테스트</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .tab-container {
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+    .tab-button {
+      cursor: pointer;
+      padding: 10px 20px;
+      border: none;
+      background: #ddd;
+      margin-right: 4px;
+      font-weight: bold;
+      border-radius: 4px 4px 0 0;
+      transition: background-color 0.3s ease;
+    }
+    .tab-button:hover {
+      background: #ccc;
+    }
+    .tab-button.active {
+      background: #fff;
+      border-bottom: 2px solid #007bff;
+      color: #007bff;
+    }
+    .tab-content {
+      display: none;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 0 4px 4px 4px;
+      background: #fff;
+      min-height: 200px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #eee;
+    }
+    input[type="text"] {
+      padding: 6px 10px;
+      width: 200px;
+      margin-right: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    button {
+      padding: 7px 14px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <link rel="stylesheet" href="{% static 'css/statistics.css' %}" />
+  <style>
+    /* 위 CSS 복사해서 여기에 넣거나 statistics.css에 넣으세요 */
+  </style>
 </head>
 <body>
+
     <h1>성범죄자 위치 정보</h1>
-
-    <div>
-        <label for="query">지역(예: 강남구):</label>
-        <input type="text" id="query" placeholder="예: 강남구" />
-        <button onclick="loadData()">불러오기</button>
+  
+    <div class="tab-container">
+      <button class="tab-button active" data-tab="location-list">위치 목록</button>
+      <button class="tab-button" data-tab="report-stats">제보 건수 통계</button>
     </div>
-
-    <h2>위치 목록</h2>
-    <table id="location-table">
+  
+    <div id="location-list" class="tab-content active">
+      <label for="query">지역(예: 강남구):</label>
+      <input type="text" id="query" placeholder="예: 강남구" />
+      <button onclick="loadData()">불러오기</button>
+  
+      <h2>위치 목록</h2>
+      <table id="location-table">
         <thead>
-            <tr>
-                <th>시/도</th>
-                <th>구</th>
-                <th>도로명</th>
-                <th>우편번호</th>
-            </tr>
+          <tr>
+            <th>시/도</th>
+            <th>구</th>
+            <th>도로명</th>
+            <th>우편번호</th>
+          </tr>
         </thead>
         <tbody>
-            <!-- 자바스크립트에서 내용 삽입 -->
+          <!-- JS에서 위치 목록 채움 -->
         </tbody>
-    </table>
-
+      </table>
+    </div>
+  
+    <div id="report-stats" class="tab-content">
+      <h2>지역별 제보 건수 통계</h2>
+      <table id="report-statistics-table">
+        <thead>
+          <tr>
+            <th>지역</th>
+            <th>건수</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for region, count in region_counts %}
+            <tr>
+              <td>{{ region }}</td>
+              <td>{{ count }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="2">등록된 제보가 없습니다.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  
     <script src="{% static 'js/statistics.js' %}"></script>
-</body>
-</html>
+    <script>
+      // 탭 버튼 클릭 시 내용 전환
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const tab = button.dataset.tab;
+  
+          document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+  
+          document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+          document.getElementById(tab).classList.add('active');
+        });
+      });
+    </script>
+  </body>
+  </html>
