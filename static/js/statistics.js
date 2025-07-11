@@ -8,13 +8,6 @@ function loadData() {
         .then(locations => {
             renderLocations(locations);
         });
-
-    // 통계용 API
-    fetch(`/api/criminal-locations/?query=${encodeURIComponent(query)}&type=stats`)
-        .then(response => response.json())
-        .then(statistics => {
-            renderStats(statistics);
-        });
 }
 
 function renderLocations(locations) {
