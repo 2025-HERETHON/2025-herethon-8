@@ -269,6 +269,8 @@ def get_filtered_criminal_data(request):
     if 'user_report' in selected_types:
         reports = Report.objects.filter(status=1)
 
+        
+
         if query:
             reports = reports.filter(address__icontains=query)
 
@@ -294,7 +296,6 @@ def get_filtered_criminal_data(request):
         'report_results': report_results,
         'query': query,
         'warning_locations': get_warning_locations(),
-        'recent_report': get_recent_warning(),
     }
 
     if request.GET.get('format') == 'json':
@@ -313,30 +314,36 @@ def get_warning_locations():
     reports = Report.objects.filter(created_at__gte=one_week_ago)
     sigungu_counts = defaultdict(int)
 
+    last_report = None
+
     for report in reports:
         sigungu = extract_sigungu(report.address or '')
         if sigungu:
             sigungu_counts[sigungu] += 1
+            last_report = report  # ✅ 여기까지는 OK
 
     sorted_locations = sorted(sigungu_counts.items(), key=lambda x: x[1], reverse=True)
 
     category_map = {
-            0: '성추행/성폭행',
-            1: '스토킹',
-            2: '인적 드문 곳',
-            3: '기타위험'
-        }
-    category = category_map.get(report.category)
+        0: '성추행/성폭행',
+        1: '스토킹',
+        2: '인적 드문 곳',
+        3: '기타위험'
+    }
 
-    if sorted_locations:
+    # ✅ None 체크 반드시 추가
+    if sorted_locations and last_report:
         top_sigungu, top_count = sorted_locations[0]
-        return {'address': top_sigungu, 
-                'count': top_count, 
-                'created_at': localtime(report.created_at),
-                'category': category,
-                }
-    return None
+        category = category_map.get(last_report.category, '기타')  # ❗ 기본값 추가해도 좋아
+        return {
+            'address': top_sigungu, 
+            'count': top_count, 
+            'created_at': localtime(last_report.created_at),
+            'category': category,
+        }
 
+    # ✅ 안전하게 None 리턴
+    return None
 
 def statistics(request):
     reports = Report.objects.filter(status=1)  # 승인된 제보만
@@ -356,3 +363,4 @@ def statistics(request):
     }
 
     return render(request, 'mapview/statistics.html', context)
+

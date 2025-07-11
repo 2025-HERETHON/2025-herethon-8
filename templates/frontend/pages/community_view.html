@@ -31,6 +31,11 @@
                 <div class="post-content" id="post-content">
                   본문 내용 표시
                 </div>
+                <div class="post-photo" id="post-photo">
+                  {% for photo in photos %}
+                    <img src="{{ photo.image.url }}" alt="Post Photo {{ forloop.counter }}" style="max-width: 100%; height: auto; margin-bottom: 10px;" />
+                  {% endfor %}
+                </div>
                 <div class="post-footer">
                   <button class="like-btn">도움이 돼요 (<span id="post-like">0</span>)</button>
                   <button class="comment-btn">댓글 (<span id="comment-count">0</span>)</button>

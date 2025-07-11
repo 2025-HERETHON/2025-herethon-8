@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from mapview.views import map_page_view 
 urlpatterns = [
+    path('mapview/', include('mapview.urls')),
     path('admin/', admin.site.urls),
     path('', include('mapview.urls')),  # 루트 경로 처리
     path('accounts/', include('accounts.full_urls')),  # 커스텀 + 소셜 로그인 통합

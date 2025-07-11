@@ -21,7 +21,6 @@ fetch('http://127.0.0.1:8000/accounts/csrf', {
     const csrftoken = getCookie('csrftoken');
     document.getElementById("csrf-token").value = csrftoken;  // form 안에 hidden input 있으면 여기에 넣는 것
 });
-
 // 로그인 form 제출 이벤트 등록
 document.getElementById("login-form").addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -65,4 +64,3 @@ document.getElementById("login-form").addEventListener("submit", async function 
 document.querySelector(".login-btn").addEventListener("click", function () {
     document.getElementById("login-form").requestSubmit();
 });
-

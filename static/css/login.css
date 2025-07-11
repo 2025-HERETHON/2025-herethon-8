@@ -88,3 +88,7 @@ input{
     margin-top: 60px;
     margin-bottom: 60px;
 }
+#userid, #userpassword{
+    padding: 15px;
+    box-sizing: border-box;
+}
