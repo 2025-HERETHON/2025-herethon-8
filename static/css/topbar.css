@@ -1,46 +1,33 @@
-body{
-    margin:0;
-}
 .top_bar{
     width: 100%;
-    background-color:#FFFFFF;
     height: 98px;
-    display:flex;
-    flex-direction: row;
+    display: flex;
+    position: relative;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: nowrap;
     border-bottom: solid #E386AD 1px ;
+    background-color: white;
+}
+h5{
+    color: #AC316D;
+    font-weight: 600;
+    font-size: 24px;
+    position: absolute;
+    left: 50px;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-
-}
-
-.logo{
-font-weight: 600;
-font-size: 24px;
-margin-left: 50px;
-justify-content: center;
-color: #AC316D;
-flex-wrap: nowrap;
-
+    cursor: pointer;
 }
 .navbar{
-    margin-left:1000px;
-    align-items: center;
-    margin-right: 50px;
-    justify-self: flex-end;
+    position: absolute;
+    right: 378px;
 }
 .nav-links{
     list-style: none;
-    display:flex;
-    flex-direction: row;
+    display: flex;
     gap: 80px; 
     font-weight: 400;
     font-size: 14px;
-    flex-wrap: nowrap;
 }
-
 .nav-links a{
     text-decoration: none; 
     color: inherit; 
@@ -50,29 +37,16 @@ ul.nav-links li a.active {
     border-bottom: 1px solid #AC316D;
     padding-bottom: 8px;
   }
-ㄴ  
-
 .login{
-display:flex;
-flex-direction: row;
-gap: 30px;
-margin-right: 60px;
+    display:flex;
+    flex-direction: row;
+    gap: 30px;
+    position: absolute;
+    right: 46px;
+    align-items: center;
 }
 
-.login_btn,
-.sign_btn{
-    background-color: #ffffff;
-    width: 102px;
-    height: 50px;
-    border-radius: 22px;
-    border: 2px solid #E386AD;
-}
-
-.sign_btn{
-    margin-right:100px;
-}
-
-.logout_btn{
+.login_btn , .sign_btn, .logout_btn{
     background-color: #ffffff;
     width: 102px;
     height: 50px;

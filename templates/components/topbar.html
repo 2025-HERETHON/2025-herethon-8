@@ -12,10 +12,8 @@
 <body>
     <div class="top_bar" id="top_bar">
         <!-- logo section -->
-        <div class="logo">
-            여성 안심 지도
-        </div>
-        <!-- nav section -->
+        <h5 id="logo">여성 안심 지도</h5>
+          <!-- nav section -->
         <div class="navbar">
             <ul class="nav-links" id="nav-links">
                 <li><a href="/map/">지도</a></li>
@@ -27,15 +25,10 @@
               <li><a href="/2025-herethon-8/frontend/pages/community.html">커뮤니티</a></li>
               <li><a href="/2025-herethon-8/frontend/pages/mypage.html">마이페이지</a></li> -->
             </ul>
-          </div>
-                   
-        <!-- login section -->
+        </div>
         <div class="login" id="login-area">
-<!-- 수정된 코드 -->
-<button class="login_btn" onclick="window.location.href='{% url 'accounts:login_page' %}'">Login</button>
-<button class="sign_btn" onclick="window.location.href='{% url 'accounts:signup_page' %}'">Sign up</button>
-
-            
+            <a href="{% url 'accounts:login_page' %}" class="login_btn">Login</a>
+            <a href="{% url 'accounts:signup_page' %}" class="sign_btn">Sign up</a>
         </div>
     </div>
 

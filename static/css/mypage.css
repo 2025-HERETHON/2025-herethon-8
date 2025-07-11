@@ -15,10 +15,11 @@ h1{
     font-size:34px;
     font-weight: 600;
     text-align:left;
-    margin-bottom:57px;
-    margin-left:213px;
+    margin-top:80px;
+    margin-left:200px;
 }
 main{
+    margin-top:60px;
     display: flex;
     justify-content: center;
     gap:30px;
