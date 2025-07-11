@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="{% static 'css/statistics.css' %}">
 </head>
 <body>
+    <div id="wrap">
     <h1>성범죄자 위치 정보</h1>
 
-    <div>
+    <div id="statistics_content">
         <label for="query">지역(예: 강남구):</label>
         <input type="text" id="query" placeholder="예: 강남구" />
-        <button onclick="loadData()">불러오기</button>
+        <button id="get_data" onclick="loadData()">불러오기</button>
     </div>
 
     <h2>위치 목록</h2>
@@ -30,7 +31,7 @@
             <!-- 자바스크립트에서 내용 삽입 -->
         </tbody>
     </table>
-
+    </div>
     <script src="{% static 'js/statistics.js' %}"></script>
 </body>
 </html>

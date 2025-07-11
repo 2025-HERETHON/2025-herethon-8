@@ -78,3 +78,7 @@ function getCookie(name) {
   }
   return cookieValue;
 }
+
+logo.addEventListener('click',()=>{
+  window.location.href="/map/";
+});
