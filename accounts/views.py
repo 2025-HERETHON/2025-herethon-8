@@ -16,7 +16,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
+import time
 
+#회원가입
 def signup(request):
     if request.method=="GET":
         form=SignUpForm()
@@ -24,7 +26,7 @@ def signup(request):
 
     form=SignUpForm(request.POST)
     if form.is_valid():
-        user=form.save() #FE: api 오류 확인
+        user=form.save() 
         user.nickname = form.cleaned_data.get("nickname", "")  # FE: nickname 수동 저장
         return JsonResponse({
             "status": "ok",
@@ -38,49 +40,7 @@ def signup(request):
         }, status=400)
     # render(request,'accounts/signup.html',{'form':form})
 
-#FE: 회원가입 페이지 이동 경로 추가
-def signup_page_view(request):
-    return render(request, 'frontend/pages/signup.html')
-# FE: 로그인 페이지 이동 경로 추가
-def login_page_view(request):
-    return render(request, 'frontend/pages/login.html')
-
-def login(request):
-    if request.method=="GET":
-        return render(request,"accounts/login.html",{"form":AuthenticationForm()})
-    
-    form=AuthenticationForm(request,request.POST)
-    if form.is_valid():
-        auth_login(request,form.user_cache)
-        return JsonResponse({"status": "ok",
-                             "redirect_url": "/frontend/pages/map.html"}) #FE: 페이지 연결 
-    return JsonResponse({"status": "fail", "errors": form.errors}, status=400) # FE: html 응답으로 했더니 브라우저에서 오류로 인식
-
-def logout(request):
-    if request.user.is_authenticated:
-        auth_logout(request)
-    return JsonResponse({"status": "ok",
-                             "redirect_url": "/frontend/pages/map.html"})
-
-def mypage(request):
-    if request.method=="POST":
-        profile_image=request.FILES.get('profile_image')
-        if profile_image:
-            request.user.profile_image.delete()
-            request.user.profile_image=profile_image
-            request.user.save()
-    return render(request,'accounts/mypage.html')
-
-def mypost(request):
-    posts = Post.objects.filter(user=request.user).order_by('-id')
-    
-    return render(request,"accounts/mypost.html",{"posts":posts})
-
-def myreport(request):
-    reports = Report.objects.filter(user=request.user).order_by('-id')
-    
-    return render(request,"accounts/myreport.html",{'reports':reports})
-
+#회원 탈퇴
 @login_required
 def delete_account(request):
     if request.method == "POST":
@@ -88,9 +48,91 @@ def delete_account(request):
         user.delete()
         logout(request)
         messages.success(request, "회원 탈퇴가 완료되었습니다.")
-        return redirect('mapview:mainmap')
+        return redirect('/map/')
     
+#FE: 회원가입 페이지 렌더링 추가
+def signup_page_view(request):
+    return render(request, 'frontend/pages/signup.html')
+# FE: 로그인 페이지 렌더링 추가
+def login_page_view(request):
+    return render(request, 'frontend/pages/login.html')
+
+# FE: 마이 페이지 렌더링 추가
+@login_required
+def my_page_view(request):
+    user = request.user
+
+    profile_image_url = (
+        f"{user.profile_image.url}?t={int(time.time())}"
+        if user.profile_image else '/static/img/user.png'
+    )
+
+    context = {
+        'profile_image_url': profile_image_url,
+        'nickname': user.nickname,
+        'email': user.email,
+        'post_count': Post.objects.filter(user=user).count(),
+        'report_count': Report.objects.filter(user=user).count(),
+    }
+    return render(request, 'frontend/pages/mypage.html', context)
+
+#FE: 마이 페이지_제보글 렌더링 추가
+def myreport_page_view(request):
+    return render(request, 'frontend/pages/myreport.html')
+#FE: 마이 페이지_게시글 렌더링 추가
+def mypost_page_view(request):
+    return render(request, 'frontend/pages/mypost.html')
+
+#FE: 이용약관 랜더링 추가 
+def terms_page_view(request):
+    return render(request, 'frontend/pages/terms.html')
+
+#FE: 개인정보 랜더링 추가 
+def policy_page_view(request):
+    return render(request, 'frontend/pages/policy.html')
+
+#로그인
+def login(request):
+    if request.method=="GET":
+        return render(request,"accounts/login.html",{"form":AuthenticationForm()})
+    form=AuthenticationForm(request,request.POST)
+    if form.is_valid():
+        auth_login(request,form.user_cache)
+        return JsonResponse({"status": "ok",
+                             "redirect_url": "/frontend/pages/map.html"}) #FE: 페이지 연결 
+    return JsonResponse({"status": "fail", "errors": form.errors}, status=400) # FE: html 응답으로 했더니 브라우저에서 오류로 인식
+
+#로그아웃
+def logout(request):
+    if request.user.is_authenticated:
+        auth_logout(request)
+    return JsonResponse({"status": "ok",
+                             "redirect_url": "/frontend/pages/map.html"})
+
+#나의 페이지
+# def mypage(request):
+#     if request.method=="POST":
+#         profile_image=request.FILES.get('profile_image')
+#         if profile_image:
+#             request.user.profile_image.delete()
+#             request.user.profile_image=profile_image
+#             request.user.save()
+#     return render(request,'/accounts/page/mypage/')
+
+
+def mypost(request):
+    posts = Post.objects.filter(user=request.user).order_by('-id')
     
+    return render(request,"fronted/page/mypost.html",{"posts":posts})
+
+def myreport(request):
+    reports = Report.objects.filter(user=request.user).order_by('-id')
+    
+    return render(request,"accounts/myreport.html",{'reports':reports})
+
+
+    
+#프로필 수정
 @login_required
 def profile_edit(request):
     if request.method == 'POST':
@@ -102,7 +144,7 @@ def profile_edit(request):
         form = UserUpdateForm(instance=request.user)
     return render(request, 'accounts/profile_edit.html', {'form': form})
 
-#로그인 완료 후에도 로그인 버튼이 있는게 이상하여 ~님으로 변경하고자 해당 코드를 삽입했습니다!
+# FE: 로그인 여부 확인 
 @login_required
 def user_info_view(request):
     user = request.user
@@ -116,19 +158,25 @@ def user_info_view(request):
 def mainmap(request):
     return render(request, 'mapview/mainmap.html')
 
-#서비스 이용약관/개인정보처리방침
+#서비스 이용약관/개인정보처리방침 :응답 부분 json으로만 변경했어요!
 def terms_of_service_view(request):
     file_path = os.path.join(settings.BASE_DIR, 'policies', 'terms_of_service.txt')
     with open(file_path, encoding='utf-8') as f:
         content = f.read()
-    return render(request, 'accounts/terms/terms_page.html', {'title': '서비스 이용약관', 'content': content})
+    return JsonResponse({
+        'title': '서비스 이용약관',
+        'content': content
+    })
 
 
 def privacy_policy_view(request):
     file_path = os.path.join(settings.BASE_DIR, 'policies', 'privacy_policy.txt')
     with open(file_path, encoding='utf-8') as f:
         content = f.read()
-    return render(request, 'accounts/terms/terms_page.html', {'title': '개인정보처리방침', 'content': content})
+    return JsonResponse({
+        'title': '개인정보처리방침',
+        'content': content
+    })
 
 #FE: 쿠키 토큰 안와서 코드 추가
 @ensure_csrf_cookie

@@ -3,7 +3,6 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from mapview.views import map_page_view 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mapview.urls')),  # 루트 경로 처리

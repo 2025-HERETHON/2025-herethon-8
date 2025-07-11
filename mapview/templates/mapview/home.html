@@ -1,9 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/css/home.css">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <title>Home</title>
 </head>
 <body>
@@ -43,12 +45,29 @@
                 </div>
             </div>
         </div>
-        <div id="map"></div>
-        <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f4b20e6dcc5ea780a057025c44d35270"&autoload=false></script>
-        <script>
-            document.getElementById('search_button').addEventListener('click', searchLocation);
-            </script>
+        <div class="map_screen">
+            <div id="map"></div>
+            <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f4b20e6dcc5ea780a057025c44d35270&libraries=services"></script>
+            <div id="marker_info">
+                <div class="marker_element">
+                    <img src="../../../static/img/red_marker.png"/>
+                    <p>성추행/성폭력</p>
+                </div>
+                <div class="marker_element">
+                    <img src="../../../static/img/orange_marker.png"/>
+                    <p>스토킹</p>
+                </div>
+                <div class="marker_element">
+                    <img src="../../../static/img/yellow_marker.png"/>
+                    <p>인적 드문 곳</p>
+                </div>
+                <div class="marker_element">
+                    <img src="../../../static/img/green_marker.png"/>
+                    <p>기타 위험</p>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'js/home.js' %}"></script>
     </div>
-   <script src="static/js/home.js"></script>
 </body>
 </html>

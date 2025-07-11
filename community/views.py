@@ -30,6 +30,7 @@ def community_list_view(request):
             "created_at": post.created_at.isoformat(),
             "views": post.views,
             "like": post.like.count(),
+            "user_id": user.id, 
             "comments": [],  # 댓글은 필요 시
             "comment_count": post.comments.count(), #FE: 댓글 카운트 추가 
         }

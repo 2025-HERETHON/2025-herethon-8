@@ -10,6 +10,10 @@ from django.db import models
 from .models import Report, ReportPhoto
 from .forms import ReportForm
 
+#FE: 제보하기 렌더링 추가 
+def report_page_view(request):
+    return render(request, 'frontend/pages/report.html')
+
 # 제보 리스트 조회
 @login_required
 def report_list_view(request):

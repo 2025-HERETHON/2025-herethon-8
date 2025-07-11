@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>제보 작성</title>
+</head>
+<body>
+    <h1>제보 폼</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <!-- 기존 사진들 보여주기 -->
+    <h3>기존 첨부 사진</h3>
+    {% if photos %}
+        {% for photo in photos %}
+            <div id="photo-{{ photo.id }}">
+                <img src="{{ photo.image.url }}" alt="첨부 사진" width="200">
+                <!-- 삭제 버튼 추가 -->
+                <button type="button" class="delete-photo" data-photo-id="{{ photo.id }}">삭제</button>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>첨부된 사진이 없습니다.</p>
+    {% endif %}
+
+    <!-- 삭제할 사진들을 hidden 필드로 전송 -->
+    <input type="hidden" name="delete_photos" id="delete_photos" value="">
+
+    <!-- 새 사진 업로드 -->
+    <label for="photos">새 사진 첨부 (여러 개 선택 가능):</label>
+    <input type="file" name="photos" multiple><br>
+
+    <button type="submit">제보 수정</button>
+</form>
+
+<script>
+    // 삭제된 사진 ID들을 hidden input에 추가하는 기능
+    const deleteButtons = document.querySelectorAll('.delete-photo');
+    const deletePhotosInput = document.getElementById('delete_photos');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const photoId = this.getAttribute('data-photo-id');
+            
+            // 이미 삭제된 ID인지 확인하고, 추가 또는 제거
+            let deletePhotos = deletePhotosInput.value ? deletePhotosInput.value.split(',') : [];
+            if (deletePhotos.includes(photoId)) {
+                deletePhotos = deletePhotos.filter(id => id !== photoId);
+            } else {
+                deletePhotos.push(photoId);
+            }
+
+            // 삭제된 사진을 화면에서 즉시 제거
+            const photoElement = document.getElementById('photo-' + photoId);
+            if (photoElement) {
+                photoElement.remove();
+            }
+
+            deletePhotosInput.value = deletePhotos.join(',');
+        });
+    });
+</script>
+
+    <a href="{% url 'reports:report_list' %}">← 제보 목록으로</a>
+</body>
+
+</html>

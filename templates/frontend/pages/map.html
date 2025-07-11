@@ -1,14 +1,75 @@
+{% load static %}
+{% include 'components/topbar.html' %}
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지도</title>
-    {% load static %}
-    {% include 'components/topbar.html' %}
-    <script src="{% static 'js/load_components.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <script src="{% static 'js/load_components.js' %}" difer></script>
+    <title>Home</title>
 </head>
 <body>
-    지도 페이지
+    <div id="wrap">
+        <div class="side_bar">
+            <div class="first_part">
+                <div class="search">
+                    <input type="text" id="search_address" placeholder="지역을 검색하세요">
+                    <input type="button" id="search_button">
+                </div>
+                <div id="category_filter">
+                    <select>
+                        <option value="" disabled selected>조회 범위를 설정하세요</option>
+                        <option value="last3months">최근 3개월</option>
+                        <option value="last6months">최근 6개월</option>
+                        <option value="last1year">최근 1년</option>
+                        <option value="all">전체</option>
+                    </select>
+                </div>
+            </div>
+            <div class="second_part">
+                <div id="alarm1" class="alert_box"></div>
+                <div id="alarm2" class="alert_box"></div>
+            </div>
+            <div class="third_part">
+                <div id="box">
+                <input type="checkbox" value="api_notice" style="accent-color:#AC316D;">
+                <span>성범죄자 고지 마커</span>
+                </div>
+                <div id="box">
+                <input type="checkbox" value="user_report" style="accent-color:#AC316D;">
+                <span>사용자 제보 마커</span>
+                </div>
+                <div id="box">
+                <input type="checkbox" value="heat_map" style="accent-color:#AC316D;">
+                <span>히트맵 표시</span>
+                </div>
+            </div>
+        </div>
+        <div class="map_screen">
+            <div id="map"></div>
+            <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f4b20e6dcc5ea780a057025c44d35270&libraries=services"></script>
+            <div id="marker_info">
+                <div class="marker_element">
+                    <img src="../../../static/img/red_marker.png"/>
+                    <p>성추행/성폭력</p>
+                </div>
+                <div class="marker_element">
+                    <img src="../../../static/img/orange_marker.png"/>
+                    <p>스토킹</p>
+                </div>
+                <div class="marker_element">
+                    <img src="../../../static/img/yellow_marker.png"/>
+                    <p>인적 드문 곳</p>
+                </div>
+                <div class="marker_element">
+                    <img src="../../../static/img/green_marker.png"/>
+                    <p>기타 위험</p>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'js/home.js' %}"></script>
+    </div>
 </body>
 </html>

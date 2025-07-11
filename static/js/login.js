@@ -13,7 +13,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// ✅ 1. 페이지 로드 시 CSRF 쿠키 요청 (서버에서 Set-Cookie로 응답)
+// 페이지 로드 시 CSRF 쿠키 요청 (서버에서 Set-Cookie로 응답)
 fetch('http://127.0.0.1:8000/accounts/csrf', {
     method: 'GET',
     credentials: 'include'
@@ -22,7 +22,7 @@ fetch('http://127.0.0.1:8000/accounts/csrf', {
     document.getElementById("csrf-token").value = csrftoken;  // form 안에 hidden input 있으면 여기에 넣는 것
 });
 
-// ✅ 2. 로그인 form 제출 이벤트 등록
+// 로그인 form 제출 이벤트 등록
 document.getElementById("login-form").addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -48,9 +48,11 @@ document.getElementById("login-form").addEventListener("submit", async function 
         if (response.ok) {
             const data = await response.json();  // JSON 응답을 먼저 파싱
             window.location.href = "/page/map/";
+            
              // 서버에서 받은 페이지로 이동(FE 템플릿)
         } else {
             const html = await response.text();
+            alert("로그인에 실패하셨습니다!")
             console.warn("Login failed:", html);
         }
 
