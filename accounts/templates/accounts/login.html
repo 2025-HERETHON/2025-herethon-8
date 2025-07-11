@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
@@ -35,5 +36,25 @@
         <div class="sign" onclick="window.location.href='/accounts/signup/'">회원가입하기</div>
         <button class="login-btn">로그인</button>
     </div>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>로그인</h2>
+    <form method="POST" action="{% url 'accounts:login' %}">
+        {%csrf_token%} {{form.as_p}}
+        <button type="submit">로그인</button>
+    </form><br>
+
+    <a href="{% url 'google_login' %}">구글 로그인</a>
+
+    <p><a href="{% url 'accounts:signup' %}">
+    회원가입</a></p>
+>>>>>>> origin/feat/reports-api
 </body>
 </html>

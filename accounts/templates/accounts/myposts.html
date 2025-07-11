@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/myposts.css' %}">
+    <title>myposts</title>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <h1>커뮤니티 작성 글</h1>
+        </header>
+        <main>
+            <div class="search">
+                <input type="text" id="post_search" placeholder="게시물을 검색하세요">
+                <input type="button" id="search_button">
+            </div>
+            <div id="postList">
+                {% for post in posts %}
+                <div class="content_box">
+                    <div class="post_content">
+                    <h2>{{ post.title }}</h2>
+                    <p>{{ post.content }}</p>
+                    <div class="post_footer">
+                        <span>도움이 돼요 {{ post.likes }}</span>
+                        <span>댓글 {{ post.comments.count }}</span>
+                    </div>
+                </div>
+                <div class="post-image"></div>
+            </div>
+        {% empty %}
+            <p>작성한 글이 없습니다.</p>
+        {% endfor %}
+     </div>
+        </main>
+    </div>
+    <script src="{% static 'js/myposts.js' %}"></script>
+</body>
+</html>
