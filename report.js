@@ -2,7 +2,7 @@
 const write_report = document.getElementById('write_report');
 const latest_report = document.getElementById('latest_report');
 const write_report_content = document.getElementById('write_report_content');
-const latest_report_content = document.getElementById('latest_report_content');
+const latest_report_list = document.getElementById('latest_report_list');
 const category_filter = document.getElementById('category_filter');
 
 write_report.addEventListener('click',()=>{
@@ -11,7 +11,7 @@ write_report.addEventListener('click',()=>{
     latest_report.style.background="#F9F9F9";
     latest_report.style.color="black";
     write_report_content.style.display='block';
-    latest_report_content.style.display='none';
+    latest_report_list.style.display='none';
     category_filter.style.display='none';
 });
 latest_report.addEventListener('click',()=>{
@@ -19,7 +19,7 @@ latest_report.addEventListener('click',()=>{
     latest_report.style.background="#E386AD";
     latest_report.style.color="white";
     write_report.style.color="black";
-    latest_report_content.style.display='block';
+    latest_report_list.style.display='block';
     write_report_content.style.display='none';
     category_filter.style.display='flex';
 });
@@ -118,3 +118,55 @@ const post_report = document.getElementById('post_report');
 post_report.addEventListener('click',()=>{
     post_report.style.background="#E386AD";
 });
+
+const report_detail = document.getElementById('report_detail');
+const content_box = document.querySelectorAll('.content_box');
+const back_btn = document.getElementById('back_btn');
+
+content_box.forEach(box=>{
+    box.addEventListener('click',()=>{
+        latest_report_list.style.display='none';
+        report_detail.style.display='block';
+        const reportAddress = ('data-address'); 
+        loadDetailMap(reportAddress);
+    });
+});
+
+back_btn.addEventListener('click',()=>{
+    report_detail.style.display='none';
+    latest_report_list.style.display='block';
+});
+
+//report_detail 지도 띄우기
+document.getElementById('back_btn').addEventListener('click', () => {
+    document.getElementById('report_detail').style.display = 'none';
+});
+
+// report_detail 지도 연동
+function loadDetailMap(address) {
+    const detailMapContainer = document.querySelector('.detail_map');
+    if (!detailMapContainer) return;
+
+    const detailMapOptions = {
+        center: new kakao.maps.LatLng(33.450701, 126.570667), // 초기 중심
+        level: 3
+    };
+
+    const detailMap = new kakao.maps.Map(detailMapContainer, detailMapOptions);
+    const detailGeocoder = new kakao.maps.services.Geocoder();
+
+    detailGeocoder.addressSearch(address, function(result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+            const marker = new kakao.maps.Marker({
+                map: detailMap,
+                position: coords
+            });
+
+            detailMap.setCenter(coords);
+        } else {
+            alert('지도를 불러올 수 없습니다.');
+        }
+    });
+}

@@ -64,7 +64,55 @@
                 </div>
                 <button id="post_report">등록</button>
             </div>
-            <div id="latest_report_content" class="tab_content">
+            <div id="latest_report_list" class="tab_content">
+                {% if reports %}
+                    {% for report in reports %}
+                        <div class="content_box">
+                            <div class="status">
+                                <p>{{ report.status }}</p> 
+                            </div>
+                            <div class="report_content">
+                                <h2>{{ report.title }}</h2>
+                                <p>{{ report.content }}</p>
+                                <div class="report_footer">
+                                    <span>도움이 돼요 {{ report.likes }}</span>
+                                    <span>댓글 {{ report.comments.count }}</span>
+                                </div>
+                            </div>
+                            <div class="report-image"></div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>작성한 제보글이 없습니다.</p>
+                {% endif %}
+            </div>
+            <div id="report_detail" class="tab_content" style="display: none;">
+                <div class="detail_status">
+                    <p>{{ report.status }}</p> 
+                </div>
+                <div class="detail_top">
+                    <div class="detail_top_text">
+                        <h2>{{ report.title }}</h2>
+                        <p>{{report.address}}</p>
+                    </div>
+                    <div class="detail_map"></div>
+                </div>
+                <div class="detail_mid">
+                    <div class="detail_category">
+                        <h3>위험 카테고리</h3>
+                        <p>{{report.category}}</p>
+                    </div>
+                    <h3>상세 내용</h3>
+                    <div class="detail_content">
+                        <p>{{report.content}}</p>
+                    </div>
+                </div>
+                <div class="detail_bottom"><div class="detail_image">{{report.photo}}</div></div>
+                <div class="fix_btn">
+                    <button id="revise">수정</button>
+                    <button id="delete">삭제</button>
+                </div>
+                <button id="back_btn">목록 보기</button>
             </div>
         </main>
     </div>
