@@ -9,6 +9,10 @@ from requests.adapters import HTTPAdapter
 from urllib3.poolmanager import PoolManager
 
 from reports.models import Report
+from datetime import datetime, timedelta
+from django.db.models import Count
+import re
+from collections import defaultdict
 
 #메인 페이지 렌더링
 def mainmap(request):
@@ -39,6 +43,8 @@ session.mount('https://', TLSAdapter())
 def get_criminal_locations(request):
     selected_types = request.GET.getlist('types')
     query = request.GET.get('query', '').strip()
+    date_range = request.GET.get('date_range', '')
+    selected_category = request.GET.get('category', '')
 
     api_results= []
     if 'api_notice' in selected_types:
@@ -95,8 +101,19 @@ def get_criminal_locations(request):
     if 'user_report' in selected_types:
         reports = Report.objects.filter(status=1)
 
+        # 주소 필터링
         if query:
             reports = reports.filter(address__icontains=query)
+
+        # 등록일 필터링
+        if date_range and date_range != "all":
+            months = int(date_range)
+            cutoff = datetime.now() - timedelta(days=30 * months)
+            reports = reports.filter(created_at__gte=cutoff)
+
+        # 카테고리 필터링
+        if selected_category != '':
+            reports = reports.filter(category=selected_category)
 
         report_results = [{
             'address': r.address,
@@ -111,9 +128,39 @@ def get_criminal_locations(request):
         'api_results': api_results,
         'report_results': report_results,
         'query': query,
+        'warning_locations': get_warning_locations(),
     }
 
     if request.GET.get('format') == 'json':
         return JsonResponse(context)
 
     return render(request, 'mapview/home.html', context)
+
+# 경고 알림
+def extract_sigungu(address):
+    """
+    #주소에서 시/군/구만 추출 (예: 송파구, 수원시, 강서구 등)
+    """
+    addrs = re.split(r' ', address)
+    match = re.search(r'([가-힣]+(시|군|구))', addrs[1])
+    return match.group(1) if match else None
+
+def get_warning_locations():
+    one_week_ago = datetime.now() - timedelta(days=7)
+    reports = Report.objects.filter(created_at__gte=one_week_ago)
+
+    sigungu_counts = defaultdict(int)
+
+    for report in reports:
+        sigungu = extract_sigungu(report.address or '')
+        if sigungu:
+            sigungu_counts[sigungu] += 1
+
+    # 정렬: 신고 수 내림차순
+    sorted_locations = sorted(sigungu_counts.items(), key=lambda x: x[1], reverse=True)
+
+    if sorted_locations:
+        top_sigungu, top_count = sorted_locations[0]
+        return {'address': top_sigungu, 'count': top_count}
+    else:
+        return None
