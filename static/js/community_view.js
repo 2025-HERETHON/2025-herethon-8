@@ -211,10 +211,15 @@ function renderComments(comments) {
       <button class="delete-btn" data-comment-id="${comment.id}">삭제</button>
       </div>
       <div class="reply-input-wrapper" id="reply-input-${comment.id}" style="display:none;">
-        <input type="text" class="reply-input">
+        <input type="text" class="reply-input" placeholder="답글 내용을 입력하세요">
+        <label>
+          <input type="checkbox" class="reply-anonymous-checkbox" data-parent-id="${comment.id}">
+          익명
+        </label>
         <button class="submit-reply-btn" data-parent-id="${comment.id}">등록</button>
       </div>
       </div>
+
     `;
 
     const replyList = document.createElement("div");
@@ -271,7 +276,7 @@ function setupEditButtons() {
   });
 }
 
-//  대댓글 입력 폼 연결
+// 대댓글 입력 폼 연결
 function setupReplyButtons() {
   document.querySelectorAll(".reply-btn").forEach(btn => {
     const commentId = btn.dataset.commentId;
@@ -286,12 +291,16 @@ function setupReplyButtons() {
       const parentId = btn.dataset.parentId;
       const wrapper = document.getElementById(`reply-input-${parentId}`);
       const input = wrapper.querySelector(".reply-input");
-      const content = input.value;
+      const checkbox = wrapper.querySelector(".reply-anonymous-checkbox");  // 익명 체크박스
+      const content = input.value.trim();
 
-      if (!content.trim()) {
+      if (!content) {
         alert("답글을 입력해주세요.");
         return;
       }
+
+      // 익명 여부 체크박스 상태
+      const isAnonymous = checkbox ? checkbox.checked : false;
 
       try {
         const response = await fetch(`http://127.0.0.1:8000/community/post/${postId}/comments/`, {
@@ -304,7 +313,7 @@ function setupReplyButtons() {
           body: JSON.stringify({
             content: content,
             parent: parentId,
-            is_anonymous: true
+            is_anonymous: isAnonymous  // 체크박스 상태 전송
           })
         });
 
@@ -322,6 +331,7 @@ function setupReplyButtons() {
     });
   });
 }
+
 
 // 댓글 작성 요청
 function setupCommentSubmit(postId) {

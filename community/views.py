@@ -115,7 +115,7 @@ class PostDetailView(View):
             ]
             comments_data.append({
                 "id": comment.id,
-                "nickname": getattr(post.user, 'nickname', post.user.username),
+                "nickname": getattr(comment.user, 'nickname', comment.user.username),
                 "is_anonymous": comment.is_anonymous,
                 "content": comment.content,
                 "created_at": comment.created_at.isoformat(),
@@ -165,7 +165,10 @@ class PostDeleteView(View):
 class CommentView(View):
     def get(self, request, post_pk):
         post = get_object_or_404(Post, pk=post_pk)
-        comments = Comment.objects.filter(post=post, parent__isnull=True).prefetch_related('replies').order_by('-created_at')
+        comments = Comment.objects.filter(post=post, parent__isnull=True)\
+            .select_related('user')\
+            .prefetch_related('replies')\
+            .order_by('-created_at')
 
         edit_comment_id = request.GET.get('edit')
         form = CommentForm()
