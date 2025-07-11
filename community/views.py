@@ -127,12 +127,13 @@ class PostDetailView(View):
             "title": post.title,
             "content": post.content,
             "nickname": getattr(post.user, 'nickname', ''),
+            "photo": post.photo.url if post.photo else None,
             "created_at": post.created_at.isoformat(),
             "views": post.views,
             "like": post.like.count(),
             "comments": comments_data
         }
-
+        print('사진:'+ post.photo.url)
         return JsonResponse(data)
     
     def post(self, request, pk):

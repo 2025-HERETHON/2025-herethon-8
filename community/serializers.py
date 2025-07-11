@@ -3,14 +3,20 @@ from .models import Post, Comment
 
 class PostSerializer(serializers.ModelSerializer):
     nickname = serializers.SerializerMethodField()
+    photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ['id', 'user', 'nickname', 'title', 'content', 'created_at', 'like', 'views']
-        read_only_fields = ['user']  
+        fields = ['id', 'user', 'nickname', 'title', 'content', 'created_at', 'like', 'views', 'photo_url']
+        read_only_fields = ['user']
     
     def get_nickname(self, obj):
         return getattr(obj.user, 'nickname', None)
+    
+    def get_photo_url(self, obj):
+        if obj.photo:
+            return obj.photo.url
+        return None
     
 class CommentSerializer(serializers.ModelSerializer):
     nickname = serializers.SerializerMethodField()

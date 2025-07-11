@@ -27,7 +27,13 @@
                 </div>
             </div>
             <div class="second_part">
-                <div id="alarm1" class="alert_box"></div>
+                <div id="alarm1" class="alert_box">
+                    {% if warning_locations %}
+                        {{ warning_locations.address }} ({{ warning_locations.count }}건)
+                    {% else %}
+                        경고 지역 없음
+                    {% endif %}
+                </div>
                 <div id="alarm2" class="alert_box"></div>
             </div>
             <div class="third_part">
