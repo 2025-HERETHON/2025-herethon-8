@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>성범죄자 위치 정보 테스트</title>
+    <link rel="stylesheet" href="{% static 'css/statistics.css' %}">
+</head>
+<body>
+    <h1>성범죄자 위치 정보</h1>
+
+    <div>
+        <label for="query">지역(예: 강남구):</label>
+        <input type="text" id="query" placeholder="예: 강남구" />
+        <button onclick="loadData()">불러오기</button>
+    </div>
+
+    <h2>위치 목록</h2>
+    <table id="location-table">
+        <thead>
+            <tr>
+                <th>시/도</th>
+                <th>구</th>
+                <th>도로명</th>
+                <th>우편번호</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 자바스크립트에서 내용 삽입 -->
+        </tbody>
+    </table>
+
+    <script src="{% static 'js/statistics.js' %}"></script>
+</body>
+</html>

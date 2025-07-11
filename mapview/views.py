@@ -37,11 +37,15 @@ class TLSAdapter(HTTPAdapter):
 session = requests.Session()
 session.mount('https://', TLSAdapter())
 
+from collections import Counter
+
+#범죄 마커 표시용
 def get_criminal_locations(request):
     service_key = settings.PUBLIC_DATA_API_KEY
     query = request.GET.get('query', '').strip()
-    
-    print(f'[DEBUG] {query}')  # 디버그용
+    response_type = request.GET.get('type', '').lower()  # 'stats'면 통계 응답
+
+    print(f'[DEBUG] query="{query}", type="{response_type}"')
 
     sggNm = ''
     roadNm = ''
@@ -49,7 +53,6 @@ def get_criminal_locations(request):
     if query:
         parts = query.split()
         if len(parts) == 1:
-            # 한 단어만 입력 시, 구 이름 또는 도로명 중 하나로 처리 (예: 구 이름 우선)
             sggNm = parts[0]
         elif len(parts) >= 2:
             sggNm = parts[0]
@@ -67,24 +70,34 @@ def get_criminal_locations(request):
         params['sggNm'] = sggNm
     if roadNm:
         params['roadNm'] = roadNm
-        
+
     try:
         response = session.get(url, params=params, verify=False)
-
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         return JsonResponse({'error': f'API 요청 실패: {e}'}, status=500)
 
     data = response.json()
     items = data.get('response', {}).get('body', {}).get('items', {}).get('item', [])
-    if isinstance(items, dict):  # item이 하나뿐일 때 dict로 오는 경우
+
+    if isinstance(items, dict):
         items = [items]
 
-    results = [{
-        'ctpvNm': item.get('ctpvNm'), 
-        'roadNmZip': item.get('roadNmZip'),
-        'sggNm': item.get('sggNm'),
-        'roadNm': item.get('roadNm'),
-    } for item in items]
+    if response_type == 'stats':
+        # 통계용: sggNm(구)별 개수 집계해서 반환
+        sgg_counter = Counter(item.get('sggNm') for item in items if item.get('sggNm'))
+        return JsonResponse(dict(sgg_counter))
 
-    return JsonResponse(results, safe=False)
+    else:
+        # 기본: 마커 표시용 리스트 반환
+        results = [{
+            'ctpvNm': item.get('ctpvNm'),
+            'roadNmZip': item.get('roadNmZip'),
+            'sggNm': item.get('sggNm'),
+            'roadNm': item.get('roadNm'),
+        } for item in items]
+        return JsonResponse(results, safe=False)
+
+
+def statistics(request):
+    return render(request, 'mapview/statistics.html')
