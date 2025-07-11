@@ -50,6 +50,8 @@ function loadCriminalMarkers(query) {
 
     const queryParams = new URLSearchParams();
     queryParams.append('query', query.trim());
+    queryParams.append('format', 'json');
+    queryParams.append('types', 'api_notice'); 
     console.log(`http://127.0.0.1:8000/api/criminal-locations/?${queryParams.toString()}`);
 
     fetch(`http://127.0.0.1:8000/api/criminal-locations/?${queryParams.toString()}`)
@@ -59,29 +61,31 @@ function loadCriminalMarkers(query) {
             return response.json();
         })
         .then(data => {
-            if (!data.length) {
+            const results = data.api_results || [];
+            if (results.length === 0) {
                 alert("해당 지역의 성범죄자 정보가 없습니다.");
                 return;
             }
-
+        
             const geocoder = new kakao.maps.services.Geocoder();
             let isFirst = true;
-
-            data.forEach(item => {
-                // item.sggNm과 item.roadNm은 백엔드에서 분리해서 내려줌
+        
+            results.forEach(item => {
                 const fullAddress = `${item.sggNm || ''} ${item.roadNm || ''}`.trim();
-                
+        
                 geocoder.addressSearch(fullAddress, function(result, status) {
                     if (status === kakao.maps.services.Status.OK) {
                         const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
+        
                         const marker = new kakao.maps.Marker({
                             map: map,
                             position: coords,
                             title: fullAddress
                         });
-
+        
                         if (isFirst) {
+                            // 첫 마커 위치로 지도 이동(필요하면)
+                            map.setCenter(coords);
                             isFirst = false;
                         }
                     } else {
@@ -90,12 +94,4 @@ function loadCriminalMarkers(query) {
                 });
             });
         })
-        .catch(error => {
-            console.error("에러:", error);
-            alert("데이터를 불러오지 못했습니다.");
-        });
-
-        console.log('입력값:', search_address);
-
-}
-
+    }        
