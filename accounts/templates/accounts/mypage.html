@@ -1,50 +1,57 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/mypage.css' %}">
+    <title>Mypage</title>
 </head>
 <body>
-    <a href="{% url 'mapview:mainmap' %}">홈으로</a>
+    <div id="wrap">
+        <header>
+            <h1>마이페이지 </h1>
+        </header>
 
-    <h2>마이페이지</h2>
-    
-    <a href="{% url 'accounts:mypost' %}">작성한 글</a><br>
-    <a href="{% url 'accounts:myreport' %}">내 제보</a><br>
-
-    {% if request.user.profile_image %}
-        <img width="200px" src="{{ request.user.profile_image.url }}" alt="Profile Image">
-    {% else %}
-        <img width="200px" src="{% static 'img/profile.png' %}" alt="Default Profile">
-    {% endif %}
-
-    <!-- 프로필 수정 페이지로 이동 -->
-    <br>
-    <a href="{% url 'accounts:profile_edit' %}">
-        <button type="button">프로필 수정</button>
-    </a>
-
-    <p>username: {{ request.user.username }}</p>
-    <p>email: {{ request.user.email }}</p>
-    <p>nickname: {{ request.user.nickname }}</p>
-    <a href="{% url 'accounts:terms_of_service' %}">서비스 이용약관</a>
-    <a href="{% url 'accounts:privacy_policy' %}">개인정보처리방침</a><br>
-
-
-    <br><hr>
-    <a href="{% url 'accounts:logout' %}">로그아웃</a><br><br>
-
-    <form id="deleteForm" method="POST" action="{% url 'accounts:delete_account' %}">
-        {% csrf_token %}
-        <button type="submit" onclick="return confirmDelete()">회원 탈퇴</button>
-    </form>
-    
-    <script>
-    function confirmDelete() {
-        return confirm("정말 탈퇴하시겠습니까?");
-    }
-    </script>
+        <main>
+            <section class="profile">
+                <div class="profile_image_wrap">
+                    <img id="profile_image" src="" alt="">
+                    <label for="user_profile" class="upload_btn">
+                        <input id="user_profile" type="file" accept="image/*" placeholder="사진 업로드"/>
+                        <span>이미지 업로드</span>
+                    </label>
+                </div>
+                <div class="profile_info">
+                    <h2 id="nickname">닉네임</h2>
+                    <p id="email">이메일</p>
+                </div>
+                <div class="profile_box">
+                    <button id="my_report" class="profile_btn">
+                        <p>내 제보</p>
+                        <span id="report_count">0</span>
+                    </button>
+                    <button id="my_post" class="profile_btn">
+                        <p>작성한 글</p>
+                        <span id="post_count">0</span>
+                    </button>
+                </div>
+                <button id="edit_profile">프로필 수정</button>
+            </section>
+            <section class="setting">
+                <h3>설정</h3>
+                <div class="setting_detail">
+                    <p>이용약관</p>
+                    <p>개인정보 처리방침</p>
+                    <p>문의하기</p>
+                </div>
+                <div class="setting_button">
+                    <button id="cancel">회원탈퇴</button>
+                    <button id="logout">로그아웃</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="{% static 'js/mypage.js' %}"></script>
 </body>
 </html>
