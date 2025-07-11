@@ -138,11 +138,19 @@ def profile_edit(request):
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
-            form.save()
-            return redirect('accounts:mypage')
-    else:
-        form = UserUpdateForm(instance=request.user)
-    return render(request, 'accounts/profile_edit.html', {'form': form})
+            user = form.save()
+            return JsonResponse({
+                "status": "ok",
+                "nickname": user.nickname,
+                "username": user.username,
+            })
+        else:
+            return JsonResponse({
+                "status": "error",
+                "errors": form.errors,
+            }, status=400)
+    return JsonResponse({"status": "error", "message": "잘못된 요청"}, status=400)
+
 
 # FE: 로그인 여부 확인 
 @login_required

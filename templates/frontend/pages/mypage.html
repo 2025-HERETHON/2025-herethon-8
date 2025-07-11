@@ -23,8 +23,12 @@
                     
                 </div>
                 <div class="profile_info">
-                    <h2 id="nickname">{{ nickname }}</h2>
-                    <p id="email">{{ email }}</p>
+                    <p id="username">{{ username }}</p>
+                    <input id="username_input" name="username" type="text" value="{{ username }}" style="display: none;">
+
+                    <p id="nickname">{{ nickname }}</p>
+                    <input id="nickname_input" name="nickname" type="text" value="{{ nickname }}" style="display: none;">
+
                 </div>
                 <div class="profile_box">
                     <button id="my_report" class="profile_btn">
@@ -32,7 +36,7 @@
                         <span id="report_count">{{ report_count }}</span>
                     </button>
                     <button id="my_post" class="profile_btn">
-                        <p>제보한 글</p>
+                        <p>작성한 글</p>
                         <span id="post_count">{{ post_count }}</span>
                     </button>
                 </div>

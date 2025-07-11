@@ -8,6 +8,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),    
     path('community/', include('community.urls')), 
     path('api/criminal-locations/', get_criminal_locations, name='criminal_locations'),
-    path('map/', map_page_view, name='map'), #FE: view 추가
+    path('map/', get_criminal_locations, name='map'), #FE: view 추가
     path('statistics/',statistics,name='criminal_statistics')
 ]

@@ -58,55 +58,96 @@ document.getElementById("logout").addEventListener("click", () => {
     }
   });
   
-  // 프로필 업로드
   document.getElementById("edit_profile").addEventListener("click", function () {
-    const fileInput = document.getElementById("user_profile");
-    const file = fileInput.files[0];
+    const isEditing = this.dataset.editing === "true";
   
-    if (!file) {
-      alert("이미지를 선택해주세요.");
-      return;
-    }
+    if (!isEditing) {
+      // 편집 모드 ON
+      ["username", "nickname"].forEach(id => {
+        document.getElementById(id).style.display = "none";
+        document.getElementById(id + "_input").style.display = "inline-block";
+      });
   
-    if (!file.type.startsWith("image/")) {
-      alert("이미지 파일만 업로드 가능합니다.");
-      return;
-    }
+      this.textContent = "저장하기";
+      this.dataset.editing = "true";
+    } else {
+      // 저장하기
+      const usernameInput = document.getElementById("username_input");
+      const nicknameInput = document.getElementById("nickname_input");
   
-    const formData = new FormData();
-    formData.append("profile_image", file);
+      const username = usernameInput?.value.trim();
+      const nickname = nicknameInput?.value.trim();
   
-    fetch("/accounts/page/mypage/", {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-      headers: {
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-    })
-    .then(res => {
-      if (!res.ok) {
-        return res.text().then(text => {
-          console.warn("서버 응답:", text);
-          throw new Error("업로드 실패");
+      if (!username || !nickname) {
+        alert("아이디와 닉네임은 필수 입력 항목입니다.");
+        return;
+      }
+  
+      const fileInput = document.getElementById("user_profile");
+      const file = fileInput.files[0];
+  
+      if (file && !file.type.startsWith("image/")) {
+        alert("이미지 파일만 업로드 가능합니다.");
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("nickname", nickname);
+      if (file) formData.append("profile_image", file);
+  
+      fetch("/accounts/edit/", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then(async res => {
+          const data = await res.json();
+          if (!res.ok) {
+            let messages = [];
+            if (data.errors) {
+              for (const field in data.errors) {
+                messages.push(...data.errors[field]);
+              }
+              alert("오류 발생:\n" + messages.join("\n"));
+            } else {
+              alert("프로필 수정 실패");
+            }
+            throw new Error("폼 검증 실패");
+          }
+          return data;
+        })
+        .then(data => {
+          // 텍스트 반영
+          document.getElementById("username").textContent = data.username;
+          document.getElementById("nickname").textContent = data.nickname;
+  
+          // 이미지 강제 새로고침
+          const img = document.getElementById("profile_image");
+          img.src = img.src.split("?")[0] + `?t=${Date.now()}`;
+  
+          // 편집 모드 종료
+          ["username", "nickname"].forEach(id => {
+            document.getElementById(id).style.display = "block";
+            document.getElementById(id + "_input").style.display = "none";
+          });
+  
+          this.textContent = "프로필 수정";
+          this.dataset.editing = "false";
+  
+          alert("프로필이 수정되었습니다.");
+        })
+        .catch(err => {
+          console.error("오류:", err);
         });
-      }
-      return res.text();  // 서버 리렌더링이 HTML이면 이렇게
-    })
-    .then(() => {
-      const img = document.getElementById("profile_image");
-      const base = img.src.split("?")[0];
-      if (!base.startsWith("data:")) {
-        img.src = `${base}?t=${Date.now()}`;  // ✅ 서버 이미지에만 강제 갱신
-      }
-      alert("프로필 이미지가 수정되었습니다.");
-    })
-    .catch(err => {
-      console.error("업로드 오류:", err);
-      alert("프로필 수정 중 오류가 발생했습니다.");
-    });
+    }
   });
   
+  
+    
   // CSRF 토큰 꺼내기
   function getCookie(name) {
     let cookieValue = null;

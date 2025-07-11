@@ -29,7 +29,15 @@
                 </div>
             </div>
             <div class="second_part">
-                <div id="alarm1" class="alert_box"></div>
+                <div id="alarm1" class="alert_box">
+                    {% if warning_locations %}
+                        {{ warning_locations.address }} 근처<br>
+                        최근 일주일 간 {{ warning_locations.count }}건의 위험 제보가 집중되었어요.
+                    {% else %}
+                        최근 일주일 간 위험 제보가 집중된 지역이 없어요!
+                    {% endif %}                                    
+                </div>
+                
                 <div id="alarm2" class="alert_box"></div>
             </div>
             <div class="third_part">
